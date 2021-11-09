@@ -1,5 +1,7 @@
 # Scrabble
 
+Group Members: Alexandra Michael (aemichae@ucsd.edu), Imran Matin (imatin@ucsd.edu)
+
 Our proposal is to use the `brick` library to implement a command-line version of Scrabble.
 We plan to begin by creating a fully local, minimum implementation of Scrabble based on the
 minimum goals outlined below. If time allows, we will extend our implementation to support
