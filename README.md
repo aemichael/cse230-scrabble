@@ -12,9 +12,9 @@ one or more of the stretch goals listed below.
   - [ ] Allowing players to finalize their play at the end of their turn
   - [ ] Allowing players to withdraw tiles from the bag to maintain a set of seven
   - [ ] An turn system in which each player alternates placing a word on the board
-  - [ ] Tracks players' current scores
-  - [ ] Tracks which tiles provide bonuses and update players' scores accordingly
-- [ ] Allow players to end or restart the game
+  - [ ] Detecting the end of the game and allow players to close or restart
+  - [ ] Tracking players' current scores
+  - [ ] Tracking which tiles provide bonuses and update players' scores accordingly
 - [ ] Support 2 players playing Scrabble locally on the same instance of the program
 
 ### Stretch Goals:
@@ -22,5 +22,6 @@ one or more of the stretch goals listed below.
 - [ ] Implement a "challenge" mechanism that allows players to challenge each other's words in
   the turn after they are played
 - [ ] Support swapping out all tiles in a player's row during their turn
+- [ ] Allow players to draw tiles to determine the play order
 - [ ] Support up to 4 players
 - [ ] Allow players to play Scrabble over a network connection
