@@ -44,4 +44,4 @@ getRounds = do
     _       -> return Nothing
 
 defaultRounds :: Int
-defaultRounds = 3
+defaultRounds = 1
