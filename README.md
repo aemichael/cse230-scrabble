@@ -7,6 +7,23 @@ We plan to begin by creating a fully local, minimum implementation of Scrabble b
 minimum goals outlined below. If time allows, we will extend our implementation to support
 one or more of the stretch goals listed below.
 
+## Updates 11/29/2021
+
+The architecture of our application looks similar to that for the `brick-tac-toe` starter game,
+with `Board`, `Player`, and `Score` components. To model the particulars of Scrabble, we add
+`TileLetter`, which represents a single letter tile in the game; and `Bag`, which models the
+bag from which tiles are drawn. We also modify the `Player` component to include a seven-tile
+`Rack`, which the player will use to create words.
+
+So far, our largest challenge has been time management, since both of us have many other
+commitments competing for our time. We are adjusting to the time we have available to work on this
+project by splitting our original goals into a simplified set of minimum goals, requiring only
+that we support one player playing Scrabble against "themselves", and a set of stretch goals
+that involve supporting 2 players and more complicated scoring. (Our original stretch goals are
+now labeled "Superlative Goals.") We hope to make significant progress on our stretch goals before
+the deadline, but if other obligations intervene, we are confident that we can at least accomplish
+our new set of minimum goals.
+
 ### Minimum Goals:
 - [ ] Implement a basic UI that imitates a Scrabble board and seven-tile row for the current player
 - [ ] Implement actions and features required for basic Scrabble play:
@@ -23,7 +40,7 @@ one or more of the stretch goals listed below.
 - [ ] A turn system in which each player alternates placing a word on the board
 - [ ] Detect the end of the game and allow players to close or restart the game
 
-### Extra Stretch Goals:
+### Superlative Goals:
 - [ ] Enforce that plays are consecutive in a row or column and build off an existing play
 - [ ] Implement a "challenge" mechanism that allows players to challenge each other's words in
   the turn after they are played
