@@ -14,7 +14,8 @@ one or more of the stretch goals listed below.
   - [ ] Player can finalize their play at the end of their turn
   - [ ] Player receives tiles from the bag to maintain a set of seven at the end of their turn
   - [ ] Track the player's current score
-- [ ] Support a single player playing one round of Scrabble against "themselves"
+- [ ] Support a single player playing one round of Scrabble against "themselves", which ends
+  when the bag is empty
 
 ### Stretch Goals:
 - [ ] Track which tiles provide bonuses and update players' scores accordingly
