@@ -22,7 +22,9 @@ executable brick-tac-toe
                        Model, 
                        Model.Board,
                        Model.Score,
-                       Model.Player
+                       Model.Player,
+                       Model.Tile,
+                       Model.Bag
 		       
   default-language:    Haskell2010
   ghc-options:       -W -threaded

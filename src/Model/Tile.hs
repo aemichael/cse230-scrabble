@@ -1,6 +1,6 @@
 module Model.Tile
   ( -- * Types
-    TileLetter
+    TileLetter (..)
 
     -- * Tile properties
   , tileScore
