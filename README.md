@@ -24,7 +24,10 @@ now labeled "Superlative Goals.") We hope to make significant progress on our st
 the deadline, but if other obligations intervene, we are confident that we can at least accomplish
 our new set of minimum goals.
 
-### Minimum Goals:
+
+## Goals:
+
+### Minimum:
 - [ ] Implement a basic UI that imitates a Scrabble board and seven-tile row for the current player
 - [ ] Implement actions and features required for basic Scrabble play:
   - [ ] Player can freely place and remove their tiles to and from the board during their turn
