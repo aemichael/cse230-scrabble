@@ -9,17 +9,20 @@ one or more of the stretch goals listed below.
 
 ### Minimum Goals:
 - [ ] Implement a basic UI that imitates a Scrabble board and seven-tile row for the current player
-- [ ] Implement actions and features required for basic Scrabble play, including:
-  - [ ] Allowing players to freely place and remove their tiles to and from the board during their turn
-  - [ ] Allowing players to finalize their play at the end of their turn
-  - [ ] Allowing players to withdraw tiles from the bag to maintain a set of seven
-  - [ ] An turn system in which each player alternates placing a word on the board
-  - [ ] Detecting the end of the game and allow players to close or restart
-  - [ ] Tracking players' current scores
-  - [ ] Tracking which tiles provide bonuses and update players' scores accordingly
-- [ ] Support 2 players playing Scrabble locally on the same instance of the program
+- [ ] Implement actions and features required for basic Scrabble play:
+  - [ ] Player can freely place and remove their tiles to and from the board during their turn
+  - [ ] Player can finalize their play at the end of their turn
+  - [ ] Player receives tiles from the bag to maintain a set of seven at the end of their turn
+  - [ ] Track the player's current score
+- [ ] Support a single player playing one round of Scrabble against "themselves"
 
 ### Stretch Goals:
+- [ ] Track which tiles provide bonuses and update players' scores accordingly
+- [ ] Support 2 players playing Scrabble locally on the same instance of the program
+- [ ] A turn system in which each player alternates placing a word on the board
+- [ ] Detect the end of the game and allow players to close or restart the game
+
+### Extra Stretch Goals:
 - [ ] Enforce that plays are consecutive in a row or column and build off an existing play
 - [ ] Implement a "challenge" mechanism that allows players to challenge each other's words in
   the turn after they are played
