@@ -22,16 +22,20 @@ Define how we will implement this over the network
 - game ends when the rack is empty at the end of a turn, after attempting to refill
 - cells = 6x6. letters = 5x5, ex:
 
+```
  ---    ---    ---    ---
 | A |  | B |  | Q |  | * |
  ---1   ---3   --10   ---0
+```
 
 Bonus tiles [stretch]:
+```
  -----    -----    -----
 |     |  |     |  |  *  |
 | 3xW |  | 2xL |  | *** |
 |     |  |     |  |  *  |
  -----    -----    -----
+```
   
   
 ## Scrabble Rules
