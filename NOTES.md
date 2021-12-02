@@ -13,7 +13,27 @@ Define what the events will be and how we handle them
 Define what the interface will look like
 
 Define how we will implement this over the network
+  
+### Interface Notes
+- use arrow keys to move around the board
+- type a letter/* to place a letter on the board. if you have that letter, it's highlighted on your rack; if you don't, nothing happens
+- hit <delete> to remove a letter; only works if placed that turn, in which case the letter is de-highlighted on  your rack
+- hit <enter> to end the turn ==> score is updated & rack refilled from bag
+- game ends when the rack is empty at the end of a turn, after attempting to refill
+- cells = 6x6. letters = 5x5, ex:
 
+ ---    ---    ---    ---
+| A |  | B |  | Q |  | * |
+ ---1   ---3   --10   ---0
+
+Bonus tiles [stretch]:
+ -----    -----    -----
+|     |  |     |  |  *  |
+| 3xW |  | 2xL |  | *** |
+|     |  |     |  |  *  |
+ -----    -----    -----
+  
+  
 ## Scrabble Rules
 
 Link to Rules Video: https://youtu.be/K1KgvZwwJqo
@@ -65,4 +85,3 @@ Score kept on scorepad.
 At end of the game all unplayed tiles from a palyers rack are subtracted from total score.
 
 If player played all their tiles, then the sum of all other players unplayed tiles is added to their score
-
