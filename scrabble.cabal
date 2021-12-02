@@ -1,15 +1,15 @@
-name:                brick-tac-toe
+name:                scrabble
 version:             0.1.0.0
 license:             MIT
 license-file:        LICENSE
 author:              Alexandra Michael, Imran Matin
-maintainer:          aemichae@ucsd.edu
+maintainer:          aemichae@ucsd.edu, imatin@ucsd.edu
 category:            Game
 build-type:          Simple
 extra-source-files:  README.md
 cabal-version:       >=1.10
 
-executable brick-tac-toe
+executable scrabble
   main-is:             Main.hs
   build-depends:       base >=4.9, 
                        random >=1.1 && <1.2,
