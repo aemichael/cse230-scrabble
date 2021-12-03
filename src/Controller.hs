@@ -73,7 +73,6 @@ right p = p { pCol = min Model.Board.boardDim (pCol p + 1) }
 
 -- Places a letter on the board
 playLetter :: Tile -> Scrabble -> IO (Result Board)
-playLetter Blank _ = undefined
 playLetter (Letter char) s = do {
   -- Check if this letter is in the player's rack
   if (isTileInRack (Letter (toUpper char)) (plRack (scrabblePlayer s)))

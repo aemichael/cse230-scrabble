@@ -72,12 +72,11 @@ mkCell' s r c = center (mkTile xoMb)
 -- Converts a Tile to a widget
 mkTile :: Maybe Tile.Tile -> Widget n
 mkTile (Just (Tile.Letter char)) = blockLetter char
-mkTile (Just (Tile.Blank))  = blockBlank
 mkTile Nothing  = blockBlank
 
 -- Widget for blank tiles
 blockBlank :: Widget n
-blockBlank = vBox [ str "*" ]
+blockBlank = vBox [ str " " ]
 
 -- Widget for a tile with a letter
 blockLetter :: Char -> Widget n
