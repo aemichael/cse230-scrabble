@@ -31,7 +31,7 @@ data GameState = MkGameState
 -- Constant that defines the initial game state
 initialGameState :: GameState
 initialGameState = MkGameState 
-  { gsPlayer      = Player.human
+  { gsPlayer      = Player.player1
   , gsBoard  = Board.initialBoardState
   , gsPos    = head Board.boardPositions 
   , gsResult = Board.Cont ()
