@@ -13,9 +13,9 @@ module Model.Board
   , Result (..)
 
   -- Constants
-  , dim
-  , positions
-  , init
+  , boardDim
+  , boardPositions
+  , initialBoardState
 
   -- Board API
   , get
@@ -32,32 +32,32 @@ import Model.Tile
 -------------------------------------------------------------------------------
 
 -- Constant defining the dimension of the board
-dim :: Int
-dim = 15
+boardDim :: Int
+boardDim = 15
 
 -- Constant defining a list of all positions on the board
-positions :: [Pos]
-positions = [ Pos r c | r <- [1..dim], c <- [1..dim] ] 
+boardPositions :: [Pos]
+boardPositions = [ Pos r c | r <- [1..boardDim], c <- [1..boardDim] ] 
 
 -- Constant defining the initial board state
-init :: ScrabbleBoard
-init = M.empty
+initialBoardState :: ScrabbleBoard
+initialBoardState = M.empty
 
 -------------------------------------------------------------------------------
 -- | Board --------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
--- The ScrabbleBoard data type
+-- A ScrabbleBoard is a map of positions to TileLetter instances
 type ScrabbleBoard = M.Map Pos TileLetter
 
--- The Pos data type
+-- A Pos is a row (1 <= pRow <= dim) and column (1 <= pCol <= dim) pair
 data Pos = Pos 
-  { pRow :: Int  -- 1 <= pRow <= dim 
-  , pCol :: Int  -- 1 <= pCol <= dim
+  { pRow :: Int
+  , pCol :: Int
   }
   deriving (Eq, Ord)
 
--- The Result data type
+-- A Result is a TODO?
 data Result a 
   = Retry 
   | Cont a

@@ -8,7 +8,7 @@ module Model.Tile
 )
 where
 
--- The TileLetter data type
+-- A TileLetter is either Blank or has a Letter
 data TileLetter = Blank
                 | Letter Char
                 deriving (Eq)

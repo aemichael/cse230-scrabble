@@ -11,6 +11,30 @@ import           Model.Tile
 
 -------------------------------------------------------------------------------
 
+-------------------------------------------------------------------------------
+-- | Moves 
+-------------------------------------------------------------------------------
+
+up :: Pos -> Pos 
+up p = p 
+  { pRow = max 1 (pRow p - 1) 
+  } 
+
+down :: Pos -> Pos
+down p = p 
+  { pRow = min Model.Board.boardDim (pRow p + 1) 
+  } 
+
+left :: Pos -> Pos 
+left p = p 
+  { pCol   = max 1 (pCol p - 1) 
+  } 
+
+right :: Pos -> Pos 
+right p = p 
+  { pCol = min Model.Board.boardDim (pCol p + 1) 
+  } 
+
 control :: PlayState -> BrickEvent n Tick -> EventM n (Next PlayState)
 control s ev = case ev of 
   T.VtyEvent (V.EvKey (V.KChar 'a') _) -> nextS s =<< liftIO (playLetter (Letter 'A') s)

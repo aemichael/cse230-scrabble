@@ -1,9 +1,9 @@
 {-# LANGUAGE RecordWildCards #-}
 module Model where 
 
-import Prelude hiding ((!!))
 import qualified Model.Board  as Board
 import qualified Model.Player as Player
+import           Prelude hiding ((!!))
 
 -------------------------------------------------------------------------------
 -- | Ticks mark passing of time: a custom event that we constantly stream
@@ -29,8 +29,8 @@ data PlayState = PS
 init :: PlayState
 init = PS 
   { p1      = Player.human
-  , psBoard  = Board.init
-  , psPos    = head Board.positions 
+  , psBoard  = Board.initialBoardState
+  , psPos    = head Board.boardPositions 
   , psResult = Board.Cont ()
   }
 
