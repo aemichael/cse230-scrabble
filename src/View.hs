@@ -26,7 +26,7 @@ view' s =
 header :: GameState -> String
 header s = printf "Scrabble row = %d, col = %d" (pRow p) (pCol p)
   where 
-    p    = psPos s
+    p    = gsPos s
 
 mkRow :: GameState -> Int -> Widget n
 mkRow s row = hTile [ mkCell s row i | i <- [1..Model.Board.boardDim] ]
@@ -44,7 +44,7 @@ withCursor = modifyDefAttr (`withStyle` reverseVideo)
 mkCell' :: GameState -> Int -> Int -> Widget n
 mkCell' s r c = center (mkTileLetter xoMb)
   where 
-    xoMb      = get (psBoard s) (BoardPos r c)
+    xoMb      = get (gsBoard s) (BoardPos r c)
 
 mkTileLetter :: Maybe Tile -> Widget n
 mkTileLetter (Just (Letter char)) = blockLetter char
