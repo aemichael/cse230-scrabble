@@ -15,12 +15,13 @@ import           Model.Player
 import           Model.Rack
 import           Model.Tile
 
+-- Startup function that runs prior to any events in the game.
 startup :: Scrabble -> EventM String Scrabble
 startup s = do
   let player = scrabblePlayer s
   let rack = plRack player
   let bag = scrabbleBag s
-  (rack', bag') <- fillRack rack bag
+  (bag', rack') <- liftIO (fillRack rack bag)
   let player' = player { plRack = rack' }
   return (s { scrabblePlayer = player', scrabbleBag = bag'});
 
