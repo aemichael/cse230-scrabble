@@ -1,7 +1,12 @@
 -------------------------------------------------------------------------------
 -- This module defines how the view for the application is rendered.
 -------------------------------------------------------------------------------
-module View (view) where
+module View
+(
+  -- View API
+  drawUI
+) 
+where
 
 import Brick
 import Brick.Widgets.Border (borderWithLabel, hBorder, vBorder)
@@ -11,55 +16,27 @@ import Data.Char (toUpper)
 import Graphics.Vty hiding (dim)
 
 import Model
-import Model.Board
-import Model.Player
-import Model.Tile
-import Text.Printf (printf)
+import Model.Board as Board
+import Model.Tile as Tile
 
--- Wrapper function for returning a list of widgets
-view :: GameState -> [Widget String]
-view s = [view' s]
+-------------------------------------------------------------------------------
+-- Draw UI entrypoint
+-------------------------------------------------------------------------------
+drawUI :: Model.Scrabble -> [Widget String]
+drawUI scrabble = [ (drawBoard scrabble) <+> ((drawPlayer scrabble) <=> (drawBag scrabble)) ]
 
--- Creates a Widget that represents the game board
-view' :: GameState -> Widget String
-view' s = 
-  board <+> sidebar
-  where
-      board = 
-        withBorderStyle unicode $ borderWithLabel (str (header s)) $
-        vTile [ mkRow s row | row <- [1..Model.Board.boardDim] ]
-      sidebar = 
-        vBox [padRight Max $ padLeft (Pad 2) $ drawPanel, padRight Max $ padLeft (Pad 2) $ drawBag]
-
-drawPanel :: Widget String
-drawPanel =
+-------------------------------------------------------------------------------
+-- Draw UI for Board
+-------------------------------------------------------------------------------
+drawBoard :: Model.Scrabble -> Widget String
+drawBoard scrabble = 
   withBorderStyle unicode
-    $ borderWithLabel (str ("Player Name: " <> plName Model.Player.player1))
-    $ padTopBottom 1
-    $ vBox
-    $ map (uncurry drawInfo)[ ("Current Score", "TODO"), ("Rack", "TODO") ]
-
-drawBag :: Widget String
-drawBag =
-  withBorderStyle unicode
-    $ borderWithLabel (str ("Bag"))
-    $ padTopBottom 1
-    $ padRight Max (padLeft (Pad 1) $ str ("TODO"))
-
-drawInfo :: String -> String -> Widget String
-drawInfo action keys =
-  padRight Max (padLeft (Pad 1) $ str action)
-    <+> padLeft Max (padRight (Pad 1) $ str keys)
-
--- Prints the header of the game board
-header :: GameState -> String
-header s = printf "Scrabble row = %d, col = %d" (pRow p) (pCol p)
-  where 
-    p    = gsPos s
+  $ borderWithLabel (str "Scrabble")
+  $ vTile [ mkRow scrabble row | row <- [1..Board.boardDim] ]
 
 -- Creates a row in the board
-mkRow :: GameState -> Int -> Widget n
-mkRow s row = hTile [ mkCell s row i | i <- [1..Model.Board.boardDim] ]
+mkRow :: Model.Scrabble -> Int -> Widget n
+mkRow s row = hTile [ mkCell s row i | i <- [1..Board.boardDim] ]
 
 -- Creates vertical tiles
 vTile :: [Widget n] -> Widget n
@@ -73,9 +50,9 @@ hTile _      = emptyWidget
 
 -- Creates a cell for each position in the board. For the current cell that the
 -- cursor is in, render it specially.
-mkCell :: GameState -> Int -> Int -> Widget n
+mkCell :: Model.Scrabble -> Int -> Int -> Widget n
 mkCell s r c 
-  | isCurr s r c = withCursor raw 
+  | Model.isCurr s r c = withCursor raw 
   | otherwise    = raw 
   where
     raw = mkCell' s r c
@@ -86,15 +63,15 @@ withCursor = modifyDefAttr (`withStyle` reverseVideo)
 
 -- Returns a cell with a widget corresponding to the tile at this position on
 -- the board
-mkCell' :: GameState -> Int -> Int -> Widget n
+mkCell' :: Model.Scrabble -> Int -> Int -> Widget n
 mkCell' s r c = center (mkTile xoMb)
   where 
-    xoMb      = get (gsBoard s) (BoardPos r c)
+    xoMb      = Board.getTile (scrabbleBoard s) (BoardPos r c)
 
 -- Converts a Tile to a widget
-mkTile :: Maybe Tile -> Widget n
-mkTile (Just (Letter char)) = blockLetter char
-mkTile (Just (Blank))  = blockBlank
+mkTile :: Maybe Tile.Tile -> Widget n
+mkTile (Just (Tile.Letter char)) = blockLetter char
+mkTile (Just (Tile.Blank))  = blockBlank
 mkTile Nothing  = blockBlank
 
 -- Widget for blank tiles
@@ -104,3 +81,33 @@ blockBlank = vBox [ str "*" ]
 -- Widget for a tile with a letter
 blockLetter :: Char -> Widget n
 blockLetter char = vBox [ str [(toUpper char)] ]
+
+-------------------------------------------------------------------------------
+-- Draw UI for Player
+-------------------------------------------------------------------------------
+drawPlayer :: Model.Scrabble -> Widget String
+drawPlayer scrabble = 
+  withBorderStyle unicode
+  $ borderWithLabel (str playerName)
+  $ padTopBottom 1
+  $ vBox
+  $ map (uncurry drawInfo)[ ("Current Score", playerScore), ("Rack", playerRack) ]
+  where
+    playerName = "TODO"
+    playerScore = "TODO"
+    playerRack = "TODO"
+
+drawInfo :: String -> String -> Widget String
+drawInfo action keys =
+  padRight Max (padLeft (Pad 1) $ str action)
+    <+> padLeft Max (padRight (Pad 1) $ str keys)
+
+-------------------------------------------------------------------------------
+-- Draw UI for Bag
+-------------------------------------------------------------------------------
+drawBag :: Model.Scrabble -> Widget String
+drawBag scrabble = 
+  withBorderStyle unicode
+  $ borderWithLabel (str ("Bag"))
+  $ padTopBottom 1
+  $ padRight Max (padLeft (Pad 1) $ str ("TODO"))
