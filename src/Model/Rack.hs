@@ -12,6 +12,7 @@ module Model.Rack
     -- Rack API
     , initRack
     , fillRack
+    , isTileInRack
 )
 where
 
@@ -33,7 +34,7 @@ type Rack = [Tile]
 
 -- The initialize a Rack
 initRack :: Rack
-initRack = []
+initRack = [(Letter 'A')]
 
 -- Fill a rack with random tiles drawn from the bag.
 fillRack :: Rack -> Bag -> IO (Rack, Bag)
@@ -41,3 +42,7 @@ fillRack rack bag = do
   let n = min (7 - length rack) (length bag)
   (rack', bag') <- drawN n bag
   return (rack', bag')
+
+-- Check if a tile is in a rack
+isTileInRack :: Tile -> Rack -> Bool
+isTileInRack tile rack = elem tile rack
