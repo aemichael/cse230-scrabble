@@ -1,8 +1,7 @@
 {-# LANGUAGE DeriveFunctor #-}
 module Model.Board 
   ( -- * Types
-    Board
-  , XO (..)
+    ScrabbleBoard
   , Pos (..)
   , Result (..)
 
@@ -12,9 +11,6 @@ module Model.Board
   , init
   , put
   , positions
-  , emptyPositions
-  , boardWinner
-  , flipXO
 
     -- * Moves
   , up
@@ -26,17 +22,13 @@ module Model.Board
 
 import Prelude hiding (init)
 import qualified Data.Map as M 
+import Model.Tile
 
 -------------------------------------------------------------------------------
 -- | Board --------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
-type Board = M.Map Pos XO
-
-data XO 
-  = X 
-  | O
-  deriving (Eq, Show)
+type ScrabbleBoard = M.Map Pos TileLetter
 
 data Pos = Pos 
   { pRow :: Int  -- 1 <= pRow <= dim 
@@ -44,7 +36,7 @@ data Pos = Pos
   }
   deriving (Eq, Ord)
 
-(!) :: Board -> Pos -> Maybe XO 
+(!) :: ScrabbleBoard -> Pos -> Maybe TileLetter 
 board ! pos = M.lookup pos board
 
 dim :: Int
@@ -53,10 +45,7 @@ dim = 15
 positions :: [Pos]
 positions = [ Pos r c | r <- [1..dim], c <- [1..dim] ] 
 
-emptyPositions :: Board -> [Pos]
-emptyPositions board  = [ p | p <- positions, M.notMember p board]
-
-init :: Board
+init :: ScrabbleBoard
 init = M.empty
 
 -------------------------------------------------------------------------------
@@ -64,40 +53,18 @@ init = M.empty
 -------------------------------------------------------------------------------
                  
 data Result a 
-  = Draw 
-  | Win XO
-  | Retry 
+  = Retry 
   | Cont a
   deriving (Eq, Functor, Show)
 
-put :: Board -> XO -> Pos -> Result Board
-put board xo pos = case M.lookup pos board of 
+put :: ScrabbleBoard -> TileLetter -> Pos -> Result ScrabbleBoard
+put board lett pos = case M.lookup pos board of 
   Just _  -> Retry
-  Nothing -> result (M.insert pos xo board) 
+  Nothing -> result (M.insert pos lett board) 
 
-result :: Board -> Result Board
+result :: ScrabbleBoard -> Result ScrabbleBoard
 result b 
-  | isFull b  = Draw
-  | wins b X  = Win  X 
-  | wins b O  = Win  O
   | otherwise = Cont b
-
-wins :: Board -> XO -> Bool
-wins b xo = or [ winsPoss b xo ps | ps <- winPositions ]
-
-winsPoss :: Board -> XO -> [Pos] -> Bool
-winsPoss b xo ps = and [ b!p == Just xo | p <- ps ]
-
-winPositions :: [[Pos]]
-winPositions = rows ++ cols ++ diags 
-
-rows, cols, diags :: [[Pos]]
-rows  = [[Pos r c | c <- [1..dim]] | r <- [1..dim]]
-cols  = [[Pos r c | r <- [1..dim]] | c <- [1..dim]]
-diags = [[Pos i i | i <- [1..dim]], [Pos i (dim+1-i) | i <- [1..dim]]]
-
-isFull :: Board -> Bool
-isFull b = M.size b == dim * dim
 
 -------------------------------------------------------------------------------
 -- | Moves 
@@ -122,12 +89,3 @@ right :: Pos -> Pos
 right p = p 
   { pCol = min dim (pCol p + 1) 
   } 
-
-boardWinner :: Result a -> Maybe XO
-boardWinner (Win xo) = Just xo
-boardWinner _        = Nothing
-
-flipXO :: XO -> XO
-flipXO X = O
-flipXO O = X
-

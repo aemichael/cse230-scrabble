@@ -8,6 +8,7 @@ import Text.Printf (printf)
 
 import Model
 import Model.Board
+import Model.Tile
 import Graphics.Vty hiding (dim)
 
 -------------------------------------------------------------------------------
@@ -22,7 +23,7 @@ view' s =
       vTile [ mkRow s row | row <- [1..dim] ]
 
 header :: PlayState -> String
-header s = printf "Scrabble Turn = %s, row = %d, col = %d" (show (psTurn s)) (pRow p) (pCol p)
+header s = printf "Scrabble row = %d, col = %d" (pRow p) (pCol p)
   where 
     p    = psPos s
 
@@ -40,24 +41,18 @@ withCursor :: Widget n -> Widget n
 withCursor = modifyDefAttr (`withStyle` reverseVideo)
 
 mkCell' :: PlayState -> Int -> Int -> Widget n
--- mkCell' _ r c = center (str (printf "(%d, %d)" r c))
-mkCell' s r c = center (mkXO xoMb)
+mkCell' s r c = center (mkTileLetter xoMb)
   where 
     xoMb      = psBoard s ! Pos r c
-    -- xoMb 
-    --   | r == c    = Just X 
-    --   | r > c     = Just O 
-    --   | otherwise = Nothing
 
-mkXO :: Maybe XO -> Widget n
-mkXO Nothing  = blockB
-mkXO (Just X) = blockX
-mkXO (Just O) = blockO
+mkTileLetter :: Maybe TileLetter -> Widget n
+mkTileLetter (Just (Letter _)) = blockA
+mkTileLetter (Just (Blank))  = blockBlank
+mkTileLetter Nothing  = blockBlank
 
-blockB, blockX, blockO :: Widget n
-blockB = vBox [ str " " ]
-blockX = vBox [ str "X" ]
-blockO = vBox [ str "O" ]
+blockBlank, blockA :: Widget n
+blockBlank = vBox [ str " " ]
+blockA = vBox [ str "A" ]
 
 vTile :: [Widget n] -> Widget n
 vTile (b:bs) = vBox (b : [hBorder <=> b | b <- bs])
