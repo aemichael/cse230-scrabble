@@ -6,6 +6,7 @@
 
 module Model where 
 
+import qualified Model.Bag  as Bag
 import qualified Model.Board  as Board
 import qualified Model.Player as Player
 import           Prelude hiding ((!!))
@@ -22,18 +23,20 @@ data Tick = Tick
 -- A GameState defines the player in the game, the board state, the current cursor
 -- position, and the result of the game.
 data GameState = MkGameState
-  { gsPlayer      :: Player.Player      -- ^ current player
+  { gsPlayer      :: Player.Player    -- ^ current player
   , gsBoard  :: Board.BoardState      -- ^ current board
   , gsPos    :: Board.BoardPos        -- ^ current cursor
+  , gsBag    :: Bag.Bag               -- ^ current bag
   , gsResult :: Board.Result ()       -- ^ result      
-  } 
+  }
 
 -- Constant that defines the initial game state
 initialGameState :: GameState
 initialGameState = MkGameState 
-  { gsPlayer      = Player.player1
+  { gsPlayer = Player.player1
   , gsBoard  = Board.initialBoardState
-  , gsPos    = head Board.boardPositions 
+  , gsPos    = head Board.boardPositions
+  , gsBag    = Bag.initBag
   , gsResult = Board.Cont ()
   }
 
