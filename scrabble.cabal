@@ -23,7 +23,8 @@ executable scrabble
                        Model.Board,
                        Model.Player,
                        Model.Tile,
-                       Model.Bag
+                       Model.Bag,
+                       Model.Rack
 		       
   default-language:    Haskell2010
   ghc-options:       -W -threaded

@@ -12,12 +12,19 @@ module Model.Player
 )
 where
 
+import Model.Rack
+
 -- A player has a name.
-data Player = Player {
+data Player = MkPlayer 
     -- The name of the player
-    plName  :: String 
-} 
+    { plName  :: String 
+    -- The rack for the player
+    , plRack :: Rack
+    } 
 
 -- Create a player with the name player1
 player1 :: Player 
-player1 = Player "player1"
+player1 = MkPlayer 
+    { plName = "player1" 
+    , plRack = initRack
+    } 
