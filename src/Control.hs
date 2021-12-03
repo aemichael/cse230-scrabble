@@ -20,7 +20,6 @@ control s ev = case ev of
   T.VtyEvent (V.EvKey V.KDown _)  -> Brick.continue (move down  s)
   T.VtyEvent (V.EvKey V.KLeft _)  -> Brick.continue (move left  s)
   T.VtyEvent (V.EvKey V.KRight _) -> Brick.continue (move right s)
-  T.VtyEvent (V.EvKey V.KDel _) -> nextS s =<< liftIO (deleteLetter s)
   T.VtyEvent (V.EvKey V.KEsc _)   -> Brick.halt s
   _                               -> Brick.continue s
 
