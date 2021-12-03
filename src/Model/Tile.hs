@@ -29,7 +29,7 @@ import           Prelude
 -- Constant map of Tile to Int containing the score of each Tile in the game
 scores :: M.Map Tile Int
 scores = M.fromList
-  [ (Blank     , 0 )
+  [ (Letter '*', 0 )
   , (Letter 'A', 1 )
   , (Letter 'B', 3 )
   , (Letter 'C', 3 )
@@ -61,7 +61,7 @@ scores = M.fromList
 -- Constant map of Tile to Int containing the counts of that Tile in the game
 counts :: M.Map Tile Int
 counts = M.fromList
-  [ (Blank     , 2 )
+  [ (Letter '*', 2 )
   , (Letter 'A', 9 )
   , (Letter 'B', 2 )
   , (Letter 'C', 2 )
@@ -95,19 +95,16 @@ counts = M.fromList
 -------------------------------------------------------------------------------
 
 -- A Tile is either Blank or has a Letter
-data Tile = Blank
-            | Letter Char
-            deriving (Eq)
+data Tile = Letter Char deriving (Eq)
 
 -- Define how to show an instance of a Tile
 instance Show Tile where
-  show Blank      = " "
   show (Letter x) = [x]
 
 -- Define how to order an instance of a Tile
 instance Ord Tile where
-  (<=) Blank      _          = True
-  (<=) _          Blank      = False
+  (<=) (Letter '*')      _          = True
+  (<=) _          (Letter '*')      = False
   (<=) (Letter x) (Letter y) = (x <= y)
 
 -- Look up the score of a tile letter

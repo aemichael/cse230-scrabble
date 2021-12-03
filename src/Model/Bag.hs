@@ -42,7 +42,7 @@ type Bag = [Tile]
 
 -- Initialize the Scrabble bag with all 100 tiles
 initBag :: Bag
-initBag = concat [ replicate (getTileCount x) x | x <- Blank : map Letter capitals ]
+initBag = concat [ replicate (getTileCount x) x | x <- Letter '*' : map Letter capitals ]
 
 -- Draw N random tiles from the bag
 drawN :: Int -> Bag -> IO (Bag, [Tile])
