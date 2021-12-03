@@ -1,5 +1,8 @@
 -------------------------------------------------------------------------------
 -- This module defines the Scrabble Board.
+-- A Board has a map of board positions to tiles.
+-- You can get the tile at a board position.
+-- You can put a tile at a board position.
 -------------------------------------------------------------------------------
 -- TODO: What is this for?
 {-# LANGUAGE DeriveFunctor #-}
