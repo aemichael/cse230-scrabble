@@ -16,17 +16,17 @@ data Tick = Tick
 
 data State 
   = Intro 
-  | Play PlayState 
+  | Play GameState 
   | Outro 
   
-data PlayState = PS
+data GameState = PS
   { p1      :: Player.Player   -- ^ player X info
-  , psBoard  :: Board.ScrabbleBoard     -- ^ current board
-  , psPos    :: Board.Pos       -- ^ current cursor
+  , psBoard  :: Board.BoardState     -- ^ current board
+  , psPos    :: Board.BoardPos       -- ^ current cursor
   , psResult :: Board.Result () -- ^ result      
   } 
 
-init :: PlayState
+init :: GameState
 init = PS 
   { p1      = Player.human
   , psBoard  = Board.initialBoardState
@@ -34,11 +34,11 @@ init = PS
   , psResult = Board.Cont ()
   }
 
-isCurr :: PlayState -> Int -> Int -> Bool
+isCurr :: GameState -> Int -> Int -> Bool
 isCurr s r c = Board.pRow p == r && Board.pCol p == c
   where 
     p = psPos s 
 
-next :: PlayState -> Board.Result Board.ScrabbleBoard -> Either (Board.Result ()) PlayState
+next :: GameState -> Board.Result Board.BoardState -> Either (Board.Result ()) GameState
 next s Board.Retry     = Right s
 next s (Board.Cont b') = Right (s { psBoard = b'})

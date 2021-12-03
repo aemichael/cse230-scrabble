@@ -30,7 +30,7 @@ main = do
   print (psResult res) 
 
 -- Constant that defines the application
-app :: App PlayState Tick String
+app :: App GameState Tick String
 app = App
   { 
     -- Converts the current application state to the widgets to display

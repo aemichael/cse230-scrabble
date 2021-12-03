@@ -1,25 +1,25 @@
 -------------------------------------------------------------------------------
--- This module defines the Tile class.
+-- This module defines a Tile.
 -------------------------------------------------------------------------------
 module Model.Tile
 (
   -- Types
-  TileLetter (..)
+  Tile (..)
 )
 where
 
--- A TileLetter is either Blank or has a Letter
-data TileLetter = Blank
-                | Letter Char
-                deriving (Eq)
+-- A Tile is either Blank or has a Letter
+data Tile = Blank
+            | Letter Char
+            deriving (Eq)
 
--- Define how to show an instance of a TileLetter
-instance Show TileLetter where
+-- Define how to show an instance of a Tile
+instance Show Tile where
   show Blank      = " "
   show (Letter x) = [x]
 
--- Define how to order an instance of a TileLetter
-instance Ord TileLetter where
+-- Define how to order an instance of a Tile
+instance Ord Tile where
   (<=) Blank      _          = True
   (<=) _          Blank      = False
   (<=) (Letter x) (Letter y) = (x <= y)

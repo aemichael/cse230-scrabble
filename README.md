@@ -11,7 +11,7 @@ one or more of the stretch goals listed below.
 
 The architecture of our application looks similar to that for the `brick-tac-toe` starter game,
 with `Board`, `Player`, and `Score` components. To model the particulars of Scrabble, we add
-`TileLetter`, which represents a single letter tile in the game; and `Bag`, which models the
+`Tile`, which represents a single letter tile in the game; and `Bag`, which models the
 bag from which tiles are drawn. We also modify the `Player` component to include a seven-tile
 `Rack`, which the player will use to create words.
 
