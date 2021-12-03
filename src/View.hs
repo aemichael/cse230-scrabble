@@ -17,6 +17,7 @@ import Graphics.Vty hiding (dim)
 
 import Model
 import Model.Board as Board
+import Model.Player as Player
 import Model.Tile as Tile
 
 -------------------------------------------------------------------------------
@@ -93,9 +94,9 @@ drawPlayer scrabble =
   $ vBox
   $ map (uncurry drawInfo)[ ("Current Score", playerScore), ("Rack", playerRack) ]
   where
-    playerName = "TODO"
-    playerScore = "TODO"
-    playerRack = "TODO"
+    playerName = plName $ scrabblePlayer scrabble
+    playerScore = show $ plScore $ (scrabblePlayer scrabble)
+    playerRack = show $ plRack $ (scrabblePlayer scrabble)
 
 drawInfo :: String -> String -> Widget String
 drawInfo action keys =
@@ -110,4 +111,6 @@ drawBag scrabble =
   withBorderStyle unicode
   $ borderWithLabel (str ("Bag"))
   $ padTopBottom 1
-  $ padRight Max (padLeft (Pad 1) $ str ("TODO"))
+  $ padRight Max (padLeft (Pad 1) $ str (bag))
+  where
+    bag = show $ scrabbleBag scrabble
