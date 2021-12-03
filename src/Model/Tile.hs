@@ -112,7 +112,6 @@ instance Ord Tile where
 
 -- Look up the score of a tile letter
 getTileScore :: Tile -> Int
-getTileScore Blank = error "This should not occur"
 getTileScore tile = case M.lookup tile scores of 
   -- If Found, return the score of this tile
   Just count  -> count
@@ -121,7 +120,6 @@ getTileScore tile = case M.lookup tile scores of
 
 -- Look up the count of a tile letter in the game
 getTileCount :: Tile -> Int
-getTileCount Blank = error "This should not occur"
 getTileCount tile = case M.lookup tile counts of 
   -- If Found, return the count of this tile
   Just count  -> count
