@@ -51,7 +51,7 @@ playLetter lett s = put (gsBoard s) lett <$> getPos s
 getPos :: GameState -> IO BoardPos
 getPos s = do {return (gsPos s)}
 
--- TODO?
+-- Updates the result of the gameState
 nextS :: GameState -> Result BoardState -> EventM n (Next GameState)
 nextS s b = case next s b of
   Right s' -> continue s'

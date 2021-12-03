@@ -37,13 +37,13 @@ initialGameState = MkGameState
   , gsResult = Board.Cont ()
   }
 
--- TODO: What is this for?
+-- Checks if the coordinate (r,c) the same as the current position of the board
 isCurr :: GameState -> Int -> Int -> Bool
 isCurr s r c = Board.pRow p == r && Board.pCol p == c
   where 
     p = gsPos s 
 
--- TODO: What is this for?
+-- Determines what the next GameState should be based on the current boardState
 next :: GameState -> Board.Result Board.BoardState -> Either (Board.Result ()) GameState
 next s Board.Retry     = Right s
 next s (Board.Cont b') = Right (s { gsBoard = b'})
