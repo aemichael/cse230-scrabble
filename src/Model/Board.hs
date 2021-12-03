@@ -1,6 +1,7 @@
 -------------------------------------------------------------------------------
 -- This module defines the Scrabble Board.
 -- A Board has a map of board positions to tiles.
+-- You can initialize a board.
 -- You can get the tile at a board position.
 -- You can put a tile at a board position.
 -------------------------------------------------------------------------------
@@ -10,18 +11,18 @@
 module Model.Board 
 (
   -- Types
-  BoardState
+  Board
   , BoardPos (..)
   , Result (..)
 
   -- Constants
   , boardDim
   , boardPositions
-  , initialBoardState
 
   -- Board API
-  , get
-  , put
+  , initBoard
+  , getTile
+  , putTile
 )
   where
 
@@ -41,16 +42,12 @@ boardDim = 15
 boardPositions :: [BoardPos]
 boardPositions = [ BoardPos r c | r <- [1..boardDim], c <- [1..boardDim] ] 
 
--- Constant defining the initial board state
-initialBoardState :: BoardState
-initialBoardState = M.empty
-
 -------------------------------------------------------------------------------
 -- | Board --------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
--- A BoardState is a map of positions to Tile instances
-type BoardState = M.Map BoardPos Tile
+-- A Board is a map of positions to Tile instances
+type Board = M.Map BoardPos Tile
 
 -- A BoardPos is a row (1 <= pRow <= dim) and column (1 <= pCol <= dim) pair
 data BoardPos = BoardPos 
@@ -65,13 +62,17 @@ data Result a
   | Cont a
   deriving (Eq, Functor, Show)
 
+-- Initialize a board
+initBoard :: Board
+initBoard = M.empty
+
 -- Gets a Tile on the board at the position
-get :: BoardState -> BoardPos -> Maybe Tile 
-get board pos = M.lookup pos board
+getTile :: Board -> BoardPos -> Maybe Tile 
+getTile board pos = M.lookup pos board
 
 -- Puts a Tile on the board at the position
-put :: BoardState -> Tile -> BoardPos -> Result BoardState
-put board lett pos = case M.lookup pos board of 
+putTile :: Board -> Tile -> BoardPos -> Result Board
+putTile board lett pos = case M.lookup pos board of 
   -- If there is a tile placed at this position, then retry
   Just _  -> Retry
   -- If there is no tile placed at this position, then insert this Tile

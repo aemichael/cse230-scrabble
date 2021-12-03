@@ -1,52 +1,51 @@
 -------------------------------------------------------------------------------
--- This module defines the main entrypoint into the application.
+-- This module defines the Scrabble game.
+-- A Scrabble game has a player, board, current cursor, bag, and result.
+-- You can initialize a Scrabble game.
 -------------------------------------------------------------------------------
--- TODO: What is this for?
-{-# LANGUAGE RecordWildCards #-}
 
 module Model where 
 
 import qualified Model.Bag  as Bag
 import qualified Model.Board  as Board
 import qualified Model.Player as Player
-import           Prelude hiding ((!!))
+import           Prelude
 
 -------------------------------------------------------------------------------
--- | Ticks mark passing of time: a custom event that we constantly stream
+-- Ticks mark passing of time: a custom event that we constantly stream
 -------------------------------------------------------------------------------
--- TODO: What is this for?
 data Tick = Tick
 
 --------------------------------------------------------------------------------
--- | Top-level Game State ------------------------------------------------------
+-- Scrabble -------------------------------------------------------------------
 --------------------------------------------------------------------------------
--- A GameState defines the player in the game, the board state, the current cursor
--- position, and the result of the game.
-data GameState = MkGameState
-  { gsPlayer      :: Player.Player    -- ^ current player
-  , gsBoard  :: Board.BoardState      -- ^ current board
-  , gsPos    :: Board.BoardPos        -- ^ current cursor
-  , gsBag    :: Bag.Bag               -- ^ current bag
-  , gsResult :: Board.Result ()       -- ^ result      
+
+-- A Scrabble has a player, board, current cursor, bag, and result.
+data Scrabble = MkScrabble
+  { scrabblePlayer :: Player.Player    -- ^ current player
+  , scrabbleBoard  :: Board.Board      -- ^ current board
+  , scrabblePos    :: Board.BoardPos   -- ^ current cursor
+  , scrabbleBag    :: Bag.Bag          -- ^ current bag
+  , scrabbleResult :: Board.Result ()  -- ^ current result      
   }
 
--- Constant that defines the initial game state
-initialGameState :: GameState
-initialGameState = MkGameState 
-  { gsPlayer = Player.player1
-  , gsBoard  = Board.initialBoardState
-  , gsPos    = head Board.boardPositions
-  , gsBag    = Bag.initBag
-  , gsResult = Board.Cont ()
+-- Initialize the Scrabble game state
+initScrabble :: Scrabble
+initScrabble = MkScrabble 
+  { scrabblePlayer = Player.initPlayer
+  , scrabbleBoard  = Board.initBoard
+  , scrabblePos    = head Board.boardPositions
+  , scrabbleBag    = Bag.initBag
+  , scrabbleResult = Board.Cont ()
   }
 
 -- Checks if the coordinate (r,c) the same as the current position of the board
-isCurr :: GameState -> Int -> Int -> Bool
+isCurr :: Scrabble -> Int -> Int -> Bool
 isCurr s r c = Board.pRow p == r && Board.pCol p == c
   where 
-    p = gsPos s 
+    p = scrabblePos s 
 
--- Determines what the next GameState should be based on the current boardState
-next :: GameState -> Board.Result Board.BoardState -> Either (Board.Result ()) GameState
-next s Board.Retry     = Right s
-next s (Board.Cont b') = Right (s { gsBoard = b'})
+-- -- Determines what the next GameState should be based on the current boardState
+-- next :: Scrabble -> Board.Result Board.Board -> Either (Board.Result ()) Scrabble
+-- next s Board.Retry     = Right s
+-- next s (Board.Cont b') = Right (s { scrabbleBoard = b'})
