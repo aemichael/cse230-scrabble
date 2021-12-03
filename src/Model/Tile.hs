@@ -1,23 +1,24 @@
-module Model.Tile
-  (
-    TileLetter (..)
-  )
-  where
-
-import Prelude
-
 -------------------------------------------------------------------------------
--- | Scrabble Tiles -----------------------------------------------------------
-------------------------------------B-------------------------------------------
+-- This module defines the Tile class.
+-------------------------------------------------------------------------------
+module Model.Tile
+(
+  -- Types
+  TileLetter (..)
+)
+where
 
+-- The TileLetter data type
 data TileLetter = Blank
                 | Letter Char
-  deriving (Eq)
+                deriving (Eq)
 
+-- Define how to show an instance of a TileLetter
 instance Show TileLetter where
   show Blank      = " "
   show (Letter x) = [x]
 
+-- Define how to order an instance of a TileLetter
 instance Ord TileLetter where
   (<=) Blank      _          = True
   (<=) _          Blank      = False
