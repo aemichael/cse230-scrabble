@@ -45,7 +45,7 @@ isCurr s r c = Board.pRow p == r && Board.pCol p == c
   where 
     p = scrabblePos s 
 
--- -- Determines what the next GameState should be based on the current boardState
--- next :: Scrabble -> Board.Result Board.Board -> Either (Board.Result ()) Scrabble
--- next s Board.Retry     = Right s
--- next s (Board.Cont b') = Right (s { scrabbleBoard = b'})
+-- Determines what the next GameState should be based on the current boardState
+next :: Scrabble -> Board.Result Board.Board -> Either (Board.Result ()) Scrabble
+next s Board.Retry     = Right s
+next s (Board.Cont b') = Right (s { scrabbleBoard = b'})
