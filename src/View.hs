@@ -36,17 +36,18 @@ header s = printf "Scrabble row = %d, col = %d" (pRow p) (pCol p)
 mkRow :: GameState -> Int -> Widget n
 mkRow s row = hTile [ mkCell s row i | i <- [1..Model.Board.boardDim] ]
 
--- TODO: What is this for?
+-- Creates vertical tiles
 vTile :: [Widget n] -> Widget n
 vTile (b:bs) = vBox (b : [hBorder <=> b | b <- bs])
 vTile _      = emptyWidget
 
--- TODO: What is this for?
+-- Creates horizontal tiles
 hTile :: [Widget n] -> Widget n
 hTile (b:bs) = hBox (b : [vBorder <+> b | b <- bs])
 hTile _      = emptyWidget
 
--- TODO: What is this for?
+-- Creates a cell for each position in the board. For the current cell that the
+-- cursor is in, render it specially.
 mkCell :: GameState -> Int -> Int -> Widget n
 mkCell s r c 
   | isCurr s r c = withCursor raw 
@@ -54,11 +55,12 @@ mkCell s r c
   where
     raw = mkCell' s r c
 
--- TODO: What is this for?
+-- Render the cell with the cursor in it in a special ways
 withCursor :: Widget n -> Widget n
 withCursor = modifyDefAttr (`withStyle` reverseVideo)
 
--- TODO: What is this for?
+-- Returns a cell with a widget corresponding to the tile at this position on
+-- the board
 mkCell' :: GameState -> Int -> Int -> Widget n
 mkCell' s r c = center (mkTile xoMb)
   where 

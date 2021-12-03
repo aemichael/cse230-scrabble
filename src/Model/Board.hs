@@ -56,7 +56,7 @@ data BoardPos = BoardPos
   }
   deriving (Eq, Ord)
 
--- A Result is a TODO?
+-- A Result is the definition of if a put succeed or fails on the board
 data Result a 
   = Retry 
   | Cont a
