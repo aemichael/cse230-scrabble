@@ -74,7 +74,7 @@ mkTile Nothing  = blockBlank
 
 -- Widget for blank tiles
 blockBlank :: Widget n
-blockBlank = vBox [ str " " ]
+blockBlank = vBox [ str "*" ]
 
 -- Widget for a tile with a letter
 blockLetter :: Char -> Widget n
