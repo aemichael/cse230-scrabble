@@ -13,6 +13,7 @@ module Model.Rack
     , initRack
     , fillRack
     , isTileInRack
+    , removeTileFromRack
 )
 where
 
@@ -46,3 +47,9 @@ fillRack rack bag = do
 -- Check if a tile is in a rack
 isTileInRack :: Tile -> Rack -> Bool
 isTileInRack tile rack = elem tile rack
+
+-- Removes a tile from a rack
+removeTileFromRack :: Tile -> Rack -> Rack
+removeTileFromRack _ []                 = []
+removeTileFromRack x (y:ys) | x == y    = removeTileFromRack x ys
+                    | otherwise = y : removeTileFromRack x ys
