@@ -1,17 +1,21 @@
+-------------------------------------------------------------------------------
+-- This module defines the main entrypoint into the application.
+-------------------------------------------------------------------------------
 module Main where
 
-import Brick
-import Graphics.Vty.Attributes
+import           Brick
+import           Brick.BChan (newBChan, writeBChan)
+import           Control
+import           Control.Concurrent (threadDelay, forkIO)
+import           Control.Monad (forever)
 import qualified Graphics.Vty as V
-import Brick.BChan (newBChan, writeBChan)
-import Control.Monad (forever)
-import Control.Concurrent (threadDelay, forkIO)
 
-import Model
-import View 
-import Control 
+import           Graphics.Vty.Attributes
+import           Model 
+import           View 
 
--------------------------------------------------------------------------------
+-- Starts the application from the initial GameState
+-- Prints the results once the game terminates
 main :: IO ()
 main = do
   chan   <- newBChan 10
@@ -20,14 +24,23 @@ main = do
     threadDelay 100000 -- decides how fast your game moves
   let buildVty = V.mkVty V.defaultConfig
   initialVty <- buildVty
+  -- This line is the entrypoint for the application
   res <- customMain initialVty buildVty (Just chan) app (Model.init)
+  -- Print the results once the game terminates
   print (psResult res) 
 
+-- Constant that defines the application
 app :: App PlayState Tick String
 app = App
-  { appDraw         = view 
-  , appChooseCursor = const . const Nothing
-  , appHandleEvent  = control 
-  , appStartEvent   = return
-  , appAttrMap      = const (attrMap defAttr [])
+  { 
+    -- Converts the current application state to the widgets to display
+    appDraw         = view 
+    -- Not Important
+    , appChooseCursor = const . const Nothing
+    -- The function to call once an event occurs and needs to be handled
+    , appHandleEvent  = control 
+    -- The function to run when the application is started
+    , appStartEvent   = return
+    -- Attribute map
+    , appAttrMap      = const (attrMap defAttr [])
   }

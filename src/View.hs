@@ -1,15 +1,15 @@
 module View (view) where
 
 import Brick
-import Brick.Widgets.Center (center)
 import Brick.Widgets.Border (borderWithLabel, hBorder, vBorder)
 import Brick.Widgets.Border.Style (unicode)
-import Text.Printf (printf)
+import Brick.Widgets.Center (center)
+import Graphics.Vty hiding (dim)
 
 import Model
 import Model.Board
 import Model.Tile
-import Graphics.Vty hiding (dim)
+import Text.Printf (printf)
 
 -------------------------------------------------------------------------------
 view :: PlayState -> [Widget String]
@@ -20,7 +20,7 @@ view' :: PlayState -> Widget String
 view' s = 
   withBorderStyle unicode $
     borderWithLabel (str (header s)) $
-      vTile [ mkRow s row | row <- [1..dim] ]
+      vTile [ mkRow s row | row <- [1..Model.Board.boardDim] ]
 
 header :: PlayState -> String
 header s = printf "Scrabble row = %d, col = %d" (pRow p) (pCol p)
@@ -28,7 +28,7 @@ header s = printf "Scrabble row = %d, col = %d" (pRow p) (pCol p)
     p    = psPos s
 
 mkRow :: PlayState -> Int -> Widget n
-mkRow s row = hTile [ mkCell s row i | i <- [1..dim] ]
+mkRow s row = hTile [ mkCell s row i | i <- [1..Model.Board.boardDim] ]
 
 mkCell :: PlayState -> Int -> Int -> Widget n
 mkCell s r c 
@@ -43,7 +43,7 @@ withCursor = modifyDefAttr (`withStyle` reverseVideo)
 mkCell' :: PlayState -> Int -> Int -> Widget n
 mkCell' s r c = center (mkTileLetter xoMb)
   where 
-    xoMb      = psBoard s ! Pos r c
+    xoMb      = get (psBoard s) (Pos r c)
 
 mkTileLetter :: Maybe TileLetter -> Widget n
 mkTileLetter (Just (Letter _)) = blockA

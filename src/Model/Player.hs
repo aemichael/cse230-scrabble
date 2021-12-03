@@ -11,7 +11,7 @@ module Model.Player
 )
 where
 
--- The Player data type
+-- A player has a name.
 data Player = Player {
     -- The name of the player
     plName  :: String 
