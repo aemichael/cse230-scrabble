@@ -1,5 +1,8 @@
 -------------------------------------------------------------------------------
 -- This module defines the Scrabble Bag.
+-- A Bag has a list of tiles.
+-- You can draw 1 tile from the bag.
+-- You can draw N tiles from the bag.
 -------------------------------------------------------------------------------
 module Model.Bag
 ( 

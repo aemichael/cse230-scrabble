@@ -1,5 +1,8 @@
 -------------------------------------------------------------------------------
 -- This module defines a Tile.
+-- A tile has a letter or is blank.
+-- You can get the score of a tile.
+-- You can get the count of a tile.
 -------------------------------------------------------------------------------
 module Model.Tile
 (
