@@ -12,25 +12,25 @@ import Model.Tile
 import Text.Printf (printf)
 
 -------------------------------------------------------------------------------
-view :: PlayState -> [Widget String]
+view :: GameState -> [Widget String]
 -------------------------------------------------------------------------------
 view s = [view' s]
 
-view' :: PlayState -> Widget String
+view' :: GameState -> Widget String
 view' s = 
   withBorderStyle unicode $
     borderWithLabel (str (header s)) $
       vTile [ mkRow s row | row <- [1..Model.Board.boardDim] ]
 
-header :: PlayState -> String
+header :: GameState -> String
 header s = printf "Scrabble row = %d, col = %d" (pRow p) (pCol p)
   where 
     p    = psPos s
 
-mkRow :: PlayState -> Int -> Widget n
+mkRow :: GameState -> Int -> Widget n
 mkRow s row = hTile [ mkCell s row i | i <- [1..Model.Board.boardDim] ]
 
-mkCell :: PlayState -> Int -> Int -> Widget n
+mkCell :: GameState -> Int -> Int -> Widget n
 mkCell s r c 
   | isCurr s r c = withCursor raw 
   | otherwise    = raw 
@@ -40,12 +40,12 @@ mkCell s r c
 withCursor :: Widget n -> Widget n
 withCursor = modifyDefAttr (`withStyle` reverseVideo)
 
-mkCell' :: PlayState -> Int -> Int -> Widget n
+mkCell' :: GameState -> Int -> Int -> Widget n
 mkCell' s r c = center (mkTileLetter xoMb)
   where 
-    xoMb      = get (psBoard s) (Pos r c)
+    xoMb      = get (psBoard s) (BoardPos r c)
 
-mkTileLetter :: Maybe TileLetter -> Widget n
+mkTileLetter :: Maybe Tile -> Widget n
 mkTileLetter (Just (Letter _)) = blockA
 mkTileLetter (Just (Blank))  = blockBlank
 mkTileLetter Nothing  = blockBlank

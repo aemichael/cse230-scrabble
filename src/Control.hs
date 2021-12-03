@@ -15,27 +15,27 @@ import           Model.Tile
 -- | Moves 
 -------------------------------------------------------------------------------
 
-up :: Pos -> Pos 
+up :: BoardPos -> BoardPos 
 up p = p 
   { pRow = max 1 (pRow p - 1) 
   } 
 
-down :: Pos -> Pos
+down :: BoardPos -> BoardPos
 down p = p 
   { pRow = min Model.Board.boardDim (pRow p + 1) 
   } 
 
-left :: Pos -> Pos 
+left :: BoardPos -> BoardPos 
 left p = p 
   { pCol   = max 1 (pCol p - 1) 
   } 
 
-right :: Pos -> Pos 
+right :: BoardPos -> BoardPos 
 right p = p 
   { pCol = min Model.Board.boardDim (pCol p + 1) 
   } 
 
-control :: PlayState -> BrickEvent n Tick -> EventM n (Next PlayState)
+control :: GameState -> BrickEvent n Tick -> EventM n (Next GameState)
 control s ev = case ev of 
   T.VtyEvent (V.EvKey (V.KChar 'a') _) -> nextS s =<< liftIO (playLetter (Letter 'A') s)
   T.VtyEvent (V.EvKey V.KUp   _)  -> Brick.continue (move up    s)
@@ -46,20 +46,20 @@ control s ev = case ev of
   _                               -> Brick.continue s
 
 -------------------------------------------------------------------------------
-move :: (Pos -> Pos) -> PlayState -> PlayState
+move :: (BoardPos -> BoardPos) -> GameState -> GameState
 -------------------------------------------------------------------------------
 move f s = s { psPos = f (psPos s) }
 
 -------------------------------------------------------------------------------
-playLetter :: TileLetter -> PlayState -> IO (Result ScrabbleBoard)
+playLetter :: Tile -> GameState -> IO (Result BoardState)
 -------------------------------------------------------------------------------
 playLetter lett s = put (psBoard s) lett <$> getPos s
 
-getPos :: PlayState -> IO Pos
+getPos :: GameState -> IO BoardPos
 getPos s = do {return (psPos s)}
 
 -------------------------------------------------------------------------------
-nextS :: PlayState -> Result ScrabbleBoard -> EventM n (Next PlayState)
+nextS :: GameState -> Result BoardState -> EventM n (Next GameState)
 -------------------------------------------------------------------------------
 nextS s b = case next s b of
   Right s' -> continue s'
