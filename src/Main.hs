@@ -25,9 +25,9 @@ main = do
   let buildVty = V.mkVty V.defaultConfig
   initialVty <- buildVty
   -- This line is the entrypoint for the application
-  res <- customMain initialVty buildVty (Just chan) app (Model.init)
+  res <- customMain initialVty buildVty (Just chan) app (Model.initialGameState)
   -- Print the results once the game terminates
-  print (psResult res) 
+  print (gsResult res) 
 
 -- Constant that defines the application
 app :: App GameState Tick String

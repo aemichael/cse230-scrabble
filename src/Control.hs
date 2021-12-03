@@ -25,7 +25,7 @@ control s ev = case ev of
 
 -- Moves the cursor in a direction
 move :: (BoardPos -> BoardPos) -> GameState -> GameState
-move f s = s { psPos = f (psPos s) }
+move f s = s { gsPos = f (gsPos s) }
 
 -- Updates a board position to be up by 1
 up :: BoardPos -> BoardPos 
@@ -45,14 +45,14 @@ right p = p { pCol = min Model.Board.boardDim (pCol p + 1) }
 
 -- Places a letter on the board
 playLetter :: Tile -> GameState -> IO (Result BoardState)
-playLetter lett s = put (psBoard s) lett <$> getPos s
+playLetter lett s = put (gsBoard s) lett <$> getPos s
 
 -- Gets the current position of the cursor on the board
 getPos :: GameState -> IO BoardPos
-getPos s = do {return (psPos s)}
+getPos s = do {return (gsPos s)}
 
 -- TODO?
 nextS :: GameState -> Result BoardState -> EventM n (Next GameState)
 nextS s b = case next s b of
   Right s' -> continue s'
-  Left res -> halt (s { psResult = res }) 
+  Left res -> halt (s { gsResult = res }) 

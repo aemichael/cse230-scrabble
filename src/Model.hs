@@ -1,4 +1,9 @@
+-------------------------------------------------------------------------------
+-- This module defines the main entrypoint into the application.
+-------------------------------------------------------------------------------
+-- TODO: What is this for?
 {-# LANGUAGE RecordWildCards #-}
+
 module Model where 
 
 import qualified Model.Board  as Board
@@ -8,37 +13,37 @@ import           Prelude hiding ((!!))
 -------------------------------------------------------------------------------
 -- | Ticks mark passing of time: a custom event that we constantly stream
 -------------------------------------------------------------------------------
+-- TODO: What is this for?
 data Tick = Tick
 
--------------------------------------------------------------------------------
--- | Top-level App State ------------------------------------------------------
--------------------------------------------------------------------------------
-
-data State 
-  = Intro 
-  | Play GameState 
-  | Outro 
-  
-data GameState = PS
-  { p1      :: Player.Player   -- ^ player X info
-  , psBoard  :: Board.BoardState     -- ^ current board
-  , psPos    :: Board.BoardPos       -- ^ current cursor
-  , psResult :: Board.Result () -- ^ result      
+--------------------------------------------------------------------------------
+-- | Top-level Game State ------------------------------------------------------
+--------------------------------------------------------------------------------
+-- A GameState defines the player in the game, the board state, the current cursor
+-- position, and the result of the game.
+data GameState = MkGameState
+  { gsPlayer      :: Player.Player      -- ^ current player
+  , gsBoard  :: Board.BoardState      -- ^ current board
+  , gsPos    :: Board.BoardPos        -- ^ current cursor
+  , gsResult :: Board.Result ()       -- ^ result      
   } 
 
-init :: GameState
-init = PS 
-  { p1      = Player.human
-  , psBoard  = Board.initialBoardState
-  , psPos    = head Board.boardPositions 
-  , psResult = Board.Cont ()
+-- Constant that defines the initial game state
+initialGameState :: GameState
+initialGameState = MkGameState 
+  { gsPlayer      = Player.human
+  , gsBoard  = Board.initialBoardState
+  , gsPos    = head Board.boardPositions 
+  , gsResult = Board.Cont ()
   }
 
+-- TODO: What is this for?
 isCurr :: GameState -> Int -> Int -> Bool
 isCurr s r c = Board.pRow p == r && Board.pCol p == c
   where 
-    p = psPos s 
+    p = gsPos s 
 
+-- TODO: What is this for?
 next :: GameState -> Board.Result Board.BoardState -> Either (Board.Result ()) GameState
 next s Board.Retry     = Right s
-next s (Board.Cont b') = Right (s { psBoard = b'})
+next s (Board.Cont b') = Right (s { gsBoard = b'})
