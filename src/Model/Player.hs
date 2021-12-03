@@ -7,7 +7,7 @@ module Model.Player
     Player (..),
 
     -- Constants
-    human
+    player1
 )
 where
 
@@ -17,6 +17,6 @@ data Player = Player {
     plName  :: String 
 } 
 
--- Create a player with the name human
-human :: Player 
-human = Player "human"
+-- Create a player with the name player1
+player1 :: Player 
+player1 = Player "player1"

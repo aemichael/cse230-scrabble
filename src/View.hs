@@ -6,12 +6,13 @@ module View (view) where
 import Brick
 import Brick.Widgets.Border (borderWithLabel, hBorder, vBorder)
 import Brick.Widgets.Border.Style (unicode)
-import Brick.Widgets.Center (center)
+import Brick.Widgets.Center
 import Data.Char (toUpper)
 import Graphics.Vty hiding (dim)
 
 import Model
 import Model.Board
+import Model.Player
 import Model.Tile
 import Text.Printf (printf)
 
@@ -22,9 +23,33 @@ view s = [view' s]
 -- Creates a Widget that represents the game board
 view' :: GameState -> Widget String
 view' s = 
-  withBorderStyle unicode $
-    borderWithLabel (str (header s)) $
-      vTile [ mkRow s row | row <- [1..Model.Board.boardDim] ]
+  board <+> sidebar
+  where
+      board = 
+        withBorderStyle unicode $ borderWithLabel (str (header s)) $
+        vTile [ mkRow s row | row <- [1..Model.Board.boardDim] ]
+      sidebar = 
+        vBox [padRight Max $ padLeft (Pad 2) $ drawPanel, padRight Max $ padLeft (Pad 2) $ drawBag]
+
+drawPanel :: Widget String
+drawPanel =
+  withBorderStyle unicode
+    $ borderWithLabel (str ("Player Name: " <> plName Model.Player.player1))
+    $ padTopBottom 1
+    $ vBox
+    $ map (uncurry drawInfo)[ ("Current Score", "TODO"), ("Rack", "TODO") ]
+
+drawBag :: Widget String
+drawBag =
+  withBorderStyle unicode
+    $ borderWithLabel (str ("Bag"))
+    $ padTopBottom 1
+    $ padRight Max (padLeft (Pad 1) $ str ("TODO"))
+
+drawInfo :: String -> String -> Widget String
+drawInfo action keys =
+  padRight Max (padLeft (Pad 1) $ str action)
+    <+> padLeft Max (padRight (Pad 1) $ str keys)
 
 -- Prints the header of the game board
 header :: GameState -> String
