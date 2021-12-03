@@ -34,7 +34,7 @@ type Rack = [Tile]
 
 -- The initialize a Rack
 initRack :: Rack
-initRack = [(Letter 'A')]
+initRack = []
 
 -- Fill a rack with random tiles drawn from the bag.
 fillRack :: Rack -> Bag -> IO (Rack, Bag)
