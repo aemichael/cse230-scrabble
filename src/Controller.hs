@@ -15,6 +15,15 @@ import           Model.Player
 import           Model.Rack
 import           Model.Tile
 
+startup :: Scrabble -> EventM String Scrabble
+startup s = do
+  let player = scrabblePlayer s
+  let rack = plRack player
+  let bag = scrabbleBag s
+  (rack', bag') <- fillRack rack bag
+  let player' = player { plRack = rack' }
+  return (s { scrabblePlayer = player', scrabbleBag = bag'});
+
 -- Main control function that is used to handle events once they occur
 control :: Scrabble -> BrickEvent n Tick -> EventM n (Next Scrabble)
 control s ev = case ev of 

@@ -41,7 +41,7 @@ app = App
     -- The function to call once an event occurs and needs to be handled
     , appHandleEvent  = Controller.control 
     -- The function to run when the application is started
-    , appStartEvent   = return
+    , appStartEvent   = Controller.startup
     -- Attribute map
     , appAttrMap      = const (attrMap defAttr [])
   }
