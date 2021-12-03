@@ -4,6 +4,7 @@ import Brick
 import Brick.Widgets.Border (borderWithLabel, hBorder, vBorder)
 import Brick.Widgets.Border.Style (unicode)
 import Brick.Widgets.Center (center)
+import Data.Char (toUpper)
 import Graphics.Vty hiding (dim)
 
 import Model
@@ -46,13 +47,15 @@ mkCell' s r c = center (mkTileLetter xoMb)
     xoMb      = get (psBoard s) (BoardPos r c)
 
 mkTileLetter :: Maybe Tile -> Widget n
-mkTileLetter (Just (Letter _)) = blockA
+mkTileLetter (Just (Letter char)) = blockLetter char
 mkTileLetter (Just (Blank))  = blockBlank
 mkTileLetter Nothing  = blockBlank
 
-blockBlank, blockA :: Widget n
+blockBlank :: Widget n
 blockBlank = vBox [ str " " ]
-blockA = vBox [ str "A" ]
+
+blockLetter :: Char -> Widget n
+blockLetter char = vBox [ str [(toUpper char)] ]
 
 vTile :: [Widget n] -> Widget n
 vTile (b:bs) = vBox (b : [hBorder <=> b | b <- bs])
