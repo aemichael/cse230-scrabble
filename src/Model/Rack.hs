@@ -3,6 +3,9 @@
 -- A Rack has a list of tiles.
 -- You can initialize a rack.
 -- You can fill a rack with tiles from the bag.
+-- You can check if a tile is in a rack.
+-- You can remove a tile from a rack.
+-- You can insert a tile in a rack.
 -------------------------------------------------------------------------------
 module Model.Rack
 ( 
@@ -14,6 +17,7 @@ module Model.Rack
     , fillRack
     , isTileInRack
     , removeTileFromRack
+    , insertTileIntoRack
 )
 where
 
@@ -53,3 +57,7 @@ removeTileFromRack :: Tile -> Rack -> Rack
 removeTileFromRack _ []                 = []
 removeTileFromRack x (y:ys) | x == y    = removeTileFromRack x ys
                     | otherwise = y : removeTileFromRack x ys
+
+-- Insert a tile into a rack
+insertTileIntoRack :: Tile -> Rack -> Rack
+insertTileIntoRack tile rack = rack ++ [tile]
