@@ -109,8 +109,9 @@ drawInfo action keys =
 drawBag :: Model.Scrabble -> Widget String
 drawBag scrabble = 
   withBorderStyle unicode
-  $ borderWithLabel (str ("Bag"))
+  $ borderWithLabel (str "Bag")
   $ padTopBottom 1
-  $ padRight Max (padLeft (Pad 1) $ str (bag))
+  $ vBox
+  $ map (uncurry drawInfo)[ ("Num Tiles Left", numTilesLeft) ]
   where
-    bag = show $ scrabbleBag scrabble
+    numTilesLeft = show $ length $ scrabbleBag scrabble

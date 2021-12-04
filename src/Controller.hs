@@ -9,6 +9,7 @@ import           Control.Monad.IO.Class (MonadIO(liftIO))
 
 import qualified Graphics.Vty as V
 import           Model
+import           Model.Bag
 import           Model.Board
 import           Model.Player
 import           Model.Rack
@@ -55,6 +56,7 @@ control s ev = case ev of
   T.VtyEvent (V.EvKey (V.KChar 'z') _) -> nextS s =<< liftIO (playLetter (Letter 'Z') s)
   T.VtyEvent (V.EvKey (V.KChar '*') _) -> nextS s =<< liftIO (playLetter (Letter '*') s)
   T.VtyEvent (V.EvKey V.KDel _) -> nextS s =<< liftIO (deleteLetter s)
+  T.VtyEvent (V.EvKey V.KEnter _) -> nextS s =<< liftIO (endTurn s)
   T.VtyEvent (V.EvKey V.KUp   _)  -> Brick.continue (move up    s)
   T.VtyEvent (V.EvKey V.KDown _)  -> Brick.continue (move down  s)
   T.VtyEvent (V.EvKey V.KLeft _)  -> Brick.continue (move left  s)
@@ -83,8 +85,9 @@ right :: BoardPos -> BoardPos
 right p = p { pCol = min Model.Board.boardDim (pCol p + 1) } 
 
 -- Delete a letter from the board
-deleteLetter :: Scrabble -> IO (Result Board, Player)
+deleteLetter :: Scrabble -> IO (Result Board, Player, Bag)
 deleteLetter s = do
+  let bag = (scrabbleBag s)
   let player = (scrabblePlayer s)
   let rack = (plRack player)
   let playedRack = (plPlayedRack player)
@@ -97,14 +100,15 @@ deleteLetter s = do
     let rack' = insertTileIntoRack tile rack
     let playedRack' = removeTileFromRack tile playedRack
     let player' = player { plRack = rack', plPlayedRack = playedRack' }
-    return (board', player')
+    return (board', player', bag)
   else do
-    return (Retry, player)
+    return (Retry, player, bag)
   
 -- Places a letter on the board
 -- TODO: Fix edge case with two of same char in rack.
-playLetter :: Tile -> Scrabble -> IO (Result Board, Player)
+playLetter :: Tile -> Scrabble -> IO (Result Board, Player, Bag)
 playLetter tile s = do
+  let bag = (scrabbleBag s)
   let player = (scrabblePlayer s)
   let rack = (plRack player)
   let playedRack = (plPlayedRack player)
@@ -112,22 +116,31 @@ playLetter tile s = do
   if (isTileInRack tile rack)
     -- If yes, then insert it and remove it from the rack and insert into played rack
   then do
-    res <- putTile (scrabbleBoard s) tile <$> getPos s;
+    let res = putTile (scrabbleBoard s) tile (scrabblePos s)
     let rack' = removeTileFromRack tile rack
     let playedRack' = insertTileIntoRack tile playedRack
     let player' = player { plRack = rack', plPlayedRack = playedRack' }
-    return (res, player')
+    return (res, player', bag)
   -- If no, then retry
   else do
-    return (Retry, player)
+    return (Retry, player, bag)
 
--- Gets the current position of the cursor on the board
-getPos :: Scrabble -> IO BoardPos
-getPos s = do {return (scrabblePos s)}
+endTurn :: Scrabble -> IO (Result Board, Player, Bag)
+endTurn s = do
+  -- TODO: Update player's score
+  let board = (scrabbleBoard s)
+  let player = (scrabblePlayer s)
+  let rack = (plRack player)
+  let bag = (scrabbleBag s)
+  -- Refill Rack
+  (rack', bag') <- fillRack rack bag
+  -- Clear playedRack
+  let player' = player { plRack = rack', plPlayedRack = initRack }
+  return (Cont board, player', bag')
 
 -- Updates the result of the Scrabble
-nextS :: Scrabble -> (Result Board, Player) -> EventM n (Next Scrabble)
-nextS s (board, player) = do
-  case next s board player of
+nextS :: Scrabble -> (Result Board, Player, Bag) -> EventM n (Next Scrabble)
+nextS s (board, player, bag) = do
+  case next s board player bag of
     Right s' -> continue s'
     Left res -> halt (s { scrabbleResult = res }) 
