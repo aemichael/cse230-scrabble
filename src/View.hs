@@ -91,11 +91,12 @@ drawPlayer scrabble =
   $ borderWithLabel (str playerName)
   $ padTopBottom 1
   $ vBox
-  $ map (uncurry drawInfo)[ ("Current Score", playerScore), ("Rack", playerRack) ]
+  $ map (uncurry drawInfo)[ ("Current Score", playerScore), ("Rack", playerRack), ("Played Rack", playerPlayedRack) ]
   where
     playerName = plName $ scrabblePlayer scrabble
     playerScore = show $ plScore $ (scrabblePlayer scrabble)
     playerRack = show $ plRack $ (scrabblePlayer scrabble)
+    playerPlayedRack = show $ plPlayedRack $ (scrabblePlayer scrabble)
 
 drawInfo :: String -> String -> Widget String
 drawInfo action keys =

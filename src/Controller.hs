@@ -53,6 +53,7 @@ control s ev = case ev of
   T.VtyEvent (V.EvKey (V.KChar 'x') _) -> nextS s =<< liftIO (playLetter (Letter 'X') s)
   T.VtyEvent (V.EvKey (V.KChar 'y') _) -> nextS s =<< liftIO (playLetter (Letter 'Y') s)
   T.VtyEvent (V.EvKey (V.KChar 'z') _) -> nextS s =<< liftIO (playLetter (Letter 'Z') s)
+  T.VtyEvent (V.EvKey (V.KChar '*') _) -> nextS s =<< liftIO (playLetter (Letter '*') s)
   T.VtyEvent (V.EvKey V.KDel _) -> nextS s =<< liftIO (deleteLetter s)
   T.VtyEvent (V.EvKey V.KUp   _)  -> Brick.continue (move up    s)
   T.VtyEvent (V.EvKey V.KDown _)  -> Brick.continue (move down  s)
@@ -86,14 +87,16 @@ deleteLetter :: Scrabble -> IO (Result Board, Player)
 deleteLetter s = do
   let player = (scrabblePlayer s)
   let rack = (plRack player)
+  let playedRack = (plPlayedRack player)
   let board = (scrabbleBoard s)
   let Just tile = getTile board (scrabblePos s)
-  -- TODO: Check if this tile has been played this turn 
-  if 1 == 1
+  -- Check if this tile has been played this turn
+  if (isTileInRack tile playedRack)
   then do
     let board' = deleteTile board (scrabblePos s)
     let rack' = insertTileIntoRack tile rack
-    let player' = player { plRack = rack' }
+    let playedRack' = removeTileFromRack tile playedRack
+    let player' = player { plRack = rack', plPlayedRack = playedRack' }
     return (board', player')
   else do
     return (Retry, player)
@@ -104,13 +107,15 @@ playLetter :: Tile -> Scrabble -> IO (Result Board, Player)
 playLetter tile s = do
   let player = (scrabblePlayer s)
   let rack = (plRack player)
+  let playedRack = (plPlayedRack player)
   -- Check if this letter is in the player's rack
   if (isTileInRack tile rack)
-    -- If yes, then insert it and remove it from the rack
+    -- If yes, then insert it and remove it from the rack and insert into played rack
   then do
     res <- putTile (scrabbleBoard s) tile <$> getPos s;
     let rack' = removeTileFromRack tile rack
-    let player' = player { plRack = rack' }
+    let playedRack' = insertTileIntoRack tile playedRack
+    let player' = player { plRack = rack', plPlayedRack = playedRack' }
     return (res, player')
   -- If no, then retry
   else do
