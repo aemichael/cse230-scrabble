@@ -53,6 +53,7 @@ control s ev = case ev of
   T.VtyEvent (V.EvKey (V.KChar 'x') _) -> nextS s =<< liftIO (playLetter (Letter 'X') s)
   T.VtyEvent (V.EvKey (V.KChar 'y') _) -> nextS s =<< liftIO (playLetter (Letter 'Y') s)
   T.VtyEvent (V.EvKey (V.KChar 'z') _) -> nextS s =<< liftIO (playLetter (Letter 'Z') s)
+  T.VtyEvent (V.EvKey V.KDel _) -> nextS s =<< liftIO (deleteLetter s)
   T.VtyEvent (V.EvKey V.KUp   _)  -> Brick.continue (move up    s)
   T.VtyEvent (V.EvKey V.KDown _)  -> Brick.continue (move down  s)
   T.VtyEvent (V.EvKey V.KLeft _)  -> Brick.continue (move left  s)
@@ -80,7 +81,25 @@ left p = p { pCol   = max 1 (pCol p - 1) }
 right :: BoardPos -> BoardPos 
 right p = p { pCol = min Model.Board.boardDim (pCol p + 1) } 
 
+-- Delete a letter from the board
+deleteLetter :: Scrabble -> IO (Result Board, Player)
+deleteLetter s = do
+  let player = (scrabblePlayer s)
+  let rack = (plRack player)
+  let board = (scrabbleBoard s)
+  let Just tile = getTile board (scrabblePos s)
+  -- TODO: Check if this tile has been played this turn 
+  if 1 == 1
+  then do
+    let board' = deleteTile board (scrabblePos s)
+    let rack' = insertTileIntoRack tile rack
+    let player' = player { plRack = rack' }
+    return (board', player')
+  else do
+    return (Retry, player)
+  
 -- Places a letter on the board
+-- TODO: Fix edge case with two of same char in rack.
 playLetter :: Tile -> Scrabble -> IO (Result Board, Player)
 playLetter tile s = do
   let player = (scrabblePlayer s)

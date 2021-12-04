@@ -4,6 +4,7 @@
 -- You can initialize a board.
 -- You can get the tile at a board position.
 -- You can put a tile at a board position.
+-- You can delete a tile at a board position.
 -------------------------------------------------------------------------------
 -- TODO: What is this for?
 {-# LANGUAGE DeriveFunctor #-}
@@ -23,6 +24,7 @@ module Model.Board
   , initBoard
   , getTile
   , putTile
+  , deleteTile
 )
   where
 
@@ -77,3 +79,7 @@ putTile board lett pos = case M.lookup pos board of
   Just _  -> Retry
   -- If there is no tile placed at this position, then insert this Tile
   Nothing -> Cont (M.insert pos lett board) 
+
+-- Delete a tile at a board position
+deleteTile :: Board -> BoardPos -> Result Board
+deleteTile board boardpos = Cont (M.delete boardpos board)
