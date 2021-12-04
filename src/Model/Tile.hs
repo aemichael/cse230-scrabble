@@ -1,40 +1,35 @@
+-------------------------------------------------------------------------------
+-- This module defines a Tile.
+-- A tile has a letter or is blank.
+-- You can get the score of a tile.
+-- You can get the count of a tile.
+-------------------------------------------------------------------------------
 module Model.Tile
-  ( -- * Types
-    TileLetter (..)
+(
+  -- Types
+  Tile (..)
 
-    -- * Tile properties
-  , tileScore
-  , tileCount
-  )
-  where
+  -- Constants
+  , scores
+  , counts
 
-import Prelude
-import qualified Data.Map.Strict as M 
+  -- Tile API
+  , getTileScore
+  , getTileCount
+)
+where
+
+import qualified Data.Map.Strict as M
+import           Prelude 
 
 -------------------------------------------------------------------------------
--- | Scrabble Tiles -----------------------------------------------------------
+-- | Constants --------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
-data TileLetter = Blank
-                | Letter Char
-  deriving Eq
-
-instance Show TileLetter where
-  show Blank      = " "
-  show (Letter x) = [x]
-
-instance Ord TileLetter where
-  (<=) Blank      _          = True
-  (<=) _          Blank      = False
-  (<=) (Letter x) (Letter y) = (x <= y)
-
--- | Look up the score for a tile letter
-tileScore :: TileLetter -> Int
-tileScore = (scores M.!)
-
-scores :: M.Map TileLetter Int
+-- Constant map of Tile to Int containing the score of each Tile in the game
+scores :: M.Map Tile Int
 scores = M.fromList
-  [ (Blank     , 0 )
+  [ (Letter '*', 0 )
   , (Letter 'A', 1 )
   , (Letter 'B', 3 )
   , (Letter 'C', 3 )
@@ -63,13 +58,10 @@ scores = M.fromList
   , (Letter 'Z', 10)
   ]
 
--- | Look up the total number of a tile letter in the game
-tileCount :: TileLetter -> Int
-tileCount = (counts M.!)
-
-counts :: M.Map TileLetter Int
+-- Constant map of Tile to Int containing the counts of that Tile in the game
+counts :: M.Map Tile Int
 counts = M.fromList
-  [ (Blank     , 2 )
+  [ (Letter '*', 2 )
   , (Letter 'A', 9 )
   , (Letter 'B', 2 )
   , (Letter 'C', 2 )
@@ -97,3 +89,36 @@ counts = M.fromList
   , (Letter 'Y', 2 )
   , (Letter 'Z', 1 )
   ]
+
+-------------------------------------------------------------------------------
+-- | Tile --------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+-- A Tile is either Blank or has a Letter
+data Tile = Letter Char deriving (Eq)
+
+-- Define how to show an instance of a Tile
+instance Show Tile where
+  show (Letter x) = [x]
+
+-- Define how to order an instance of a Tile
+instance Ord Tile where
+  (<=) (Letter '*')      _          = True
+  (<=) _          (Letter '*')      = False
+  (<=) (Letter x) (Letter y) = (x <= y)
+
+-- Look up the score of a tile letter
+getTileScore :: Tile -> Int
+getTileScore tile = case M.lookup tile scores of 
+  -- If Found, return the score of this tile
+  Just count  -> count
+  -- If Not Found, this should never happen
+  Nothing -> error "This should not occur"
+
+-- Look up the count of a tile letter in the game
+getTileCount :: Tile -> Int
+getTileCount tile = case M.lookup tile counts of 
+  -- If Found, return the count of this tile
+  Just count  -> count
+  -- If Not Found, this should never happen
+  Nothing -> error "This should not occur"

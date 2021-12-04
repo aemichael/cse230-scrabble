@@ -17,14 +17,15 @@ executable scrabble
                        vty, 
                        brick
   hs-source-dirs:      src
-  other-modules:       View, 
-                       Control,
-                       Model, 
+  other-modules:       Model,
+                       View, 
+                       Controller,
+                       Model.Bag
                        Model.Board,
-                       Model.Score,
                        Model.Player,
                        Model.Tile,
-                       Model.Bag
+                       Model.Rack,
+                       Model.Score
 		       
   default-language:    Haskell2010
   ghc-options:       -W -threaded

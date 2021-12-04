@@ -1,45 +1,43 @@
-{-# LANGUAGE RecordWildCards #-}
-module Model.Score where
+-------------------------------------------------------------------------------
+-- This module defines a Score.
+-- A score has a sum of points.
+-- You can initialize a score.
+-- You can update to a score.
+-- You can get a score.
+-------------------------------------------------------------------------------
+module Model.Score
+( 
+    -- Types
+    Score
 
-import Model.Board (Result (..), XO (..))
+    -- Score API
+    , initScore
+    , getScore
+    , updateScore
+)
+where
+
+import Prelude
 
 -------------------------------------------------------------------------------
--- | Score --------------------------------------------------------------------
+-- | Constants --------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
-data Score = Score 
-  { scMax  :: Int  -- ^ total number of boards
-  , scX    :: Int  -- ^ points for player X 
-  , scO    :: Int  -- ^ points for player O 
-  , scD    :: Int  -- ^ drawn games 
-  }
-  deriving (Eq, Ord, Show)
+-------------------------------------------------------------------------------
+-- | Score --------------------------------------------------
+-------------------------------------------------------------------------------
 
-init :: Int -> Score
-init n = Score n 0 0 0
+-- A score is an integer sum of all points from tiles.
+type Score = Int
 
-add :: Score -> Maybe XO -> Score
-add sc (Just X) = sc { scX = scX sc + 1 }
-add sc (Just O) = sc { scO = scO sc + 1 }
-add sc Nothing  = sc { scD = scD sc + 1 }
+-- The initialize a Score
+initScore :: Score
+initScore = 0
 
-get :: Score -> XO -> Int
-get Score {..} X = scX 
-get Score {..} O = scO 
+-- Gets the score
+getScore :: Score -> Score
+getScore curr_score = curr_score
 
-currRound :: Score -> Int
-currRound Score {..} = scX + scO + scD + 1
-
-startPlayer :: Score -> XO
-startPlayer sc 
-  | even (currRound sc) = X
-  | otherwise           = O
-
-winner :: Score -> Result () 
-winner sc@Score {..}
-  | scX > scO + left = Win X
-  | scO > scX + left = Win O
-  | left == 0        = Draw
-  | otherwise        = Cont ()
-  where 
-    left             = 1 + scMax - currRound sc
+-- Updates the score
+updateScore :: Int -> Score -> Score
+updateScore points curr_score = points + curr_score
