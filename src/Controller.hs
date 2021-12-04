@@ -105,7 +105,6 @@ deleteLetter s = do
     return (Retry, player, bag)
   
 -- Places a letter on the board
--- TODO: Fix edge case with two of same char in rack.
 playLetter :: Tile -> Scrabble -> IO (Result Board, Player, Bag)
 playLetter tile s = do
   let bag = (scrabbleBag s)

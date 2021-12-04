@@ -52,11 +52,12 @@ fillRack rack bag = do
 isTileInRack :: Tile -> Rack -> Bool
 isTileInRack tile rack = elem tile rack
 
--- Removes a tile from a rack
+-- Removes the first occurrence of a tile from a rack.
 removeTileFromRack :: Tile -> Rack -> Rack
-removeTileFromRack _ []                 = []
-removeTileFromRack x (y:ys) | x == y    = removeTileFromRack x ys
-                    | otherwise = y : removeTileFromRack x ys
+removeTileFromRack _ [] = []
+removeTileFromRack tile (x:xs)
+  | x == tile = xs
+  | otherwise = x : removeTileFromRack tile xs
 
 -- Insert a tile into a rack
 insertTileIntoRack :: Tile -> Rack -> Rack
