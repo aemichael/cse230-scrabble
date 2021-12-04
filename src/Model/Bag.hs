@@ -44,7 +44,9 @@ type Bag = [Tile]
 
 -- Initialize the Scrabble bag with all 100 tiles
 initBag :: Bag
-initBag = concat [ replicate (getTileCount x) x | x <- Letter '*' : map Letter capitals ]
+initBag = concat [ 
+    replicate (getTileCount x) x | x <- Letter '*' : map Letter capitals 
+  ]
 
 -- Draw N random tiles from the bag
 drawN :: Int -> Bag -> IO (Bag, [Tile])
@@ -58,7 +60,7 @@ drawN n bag = do
 draw1 :: Bag -> IO (Bag, Tile)
 draw1 bag = do
   i <- randomRIO (0, length bag - 1)
-  let bag' = take (i - 1) bag ++ drop i bag
+  let bag' = take i bag ++ drop (i + 1) bag
   return (bag', bag !! i)
 
 -- Check if the bag is empty

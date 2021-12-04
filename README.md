@@ -34,7 +34,7 @@ our new set of minimum goals.
   - [x] Player can finalize their play at the end of their turn
   - [x] Player receives tiles from the bag to maintain a set of seven at the end of their turn
   - [x] Track the player's current score
-- [ ] Support a single player playing one round of Scrabble against "themselves", which ends
+- [x] Support a single player playing one round of Scrabble against "themselves", which ends
   when the bag is empty
 
 ### Stretch Goals:
