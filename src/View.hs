@@ -17,6 +17,7 @@ import Graphics.Vty hiding (dim)
 
 import Model
 import Model.Board as Board
+import Model.PlayedRack as PlayedRack
 import Model.Player as Player
 import Model.Tile as Tile
 
@@ -96,7 +97,7 @@ drawPlayer scrabble =
     playerName = plName $ scrabblePlayer scrabble
     playerScore = show $ plScore $ (scrabblePlayer scrabble)
     playerRack = show $ plRack $ (scrabblePlayer scrabble)
-    playerPlayedRack = show $ plPlayedRack $ (scrabblePlayer scrabble)
+    playerPlayedRack = show $ PlayedRack.extractTiles $ plPlayedRack $ (scrabblePlayer scrabble)
 
 drawInfo :: String -> String -> Widget String
 drawInfo action keys =

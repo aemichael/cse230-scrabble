@@ -13,6 +13,7 @@ import           Model.Bag
 import           Model.Board
 import           Model.Player
 import           Model.Rack
+import           Model.PlayedRack
 import           Model.Tile
 
 -- Startup function that runs prior to any events in the game.
@@ -94,11 +95,11 @@ deleteLetter s = do
   let board = (scrabbleBoard s)
   let Just tile = getTile board (scrabblePos s)
   -- Check if this tile has been played this turn
-  if (isTileInRack tile playedRack)
+  if (isTileInPlayedRack (tile, (scrabblePos s)) playedRack)
   then do
     let board' = deleteTile board (scrabblePos s)
     let rack' = insertTileIntoRack tile rack
-    let playedRack' = removeTileFromRack tile playedRack
+    let playedRack' = removeTileFromPlayedRack (tile, (scrabblePos s)) playedRack
     let player' = player { plRack = rack', plPlayedRack = playedRack' }
     return (board', player', bag)
   else do
@@ -117,7 +118,7 @@ playLetter tile s = do
   then do
     let res = putTile (scrabbleBoard s) tile (scrabblePos s)
     let rack' = removeTileFromRack tile rack
-    let playedRack' = insertTileIntoRack tile playedRack
+    let playedRack' = insertTileIntoPlayedRack (tile, (scrabblePos s)) playedRack
     let player' = player { plRack = rack', plPlayedRack = playedRack' }
     return (res, player', bag)
   -- If no, then retry
@@ -134,7 +135,7 @@ endTurn s = do
   -- Refill Rack
   (bag', rack') <- fillRack rack bag
   -- Clear playedRack
-  let player' = player { plRack = rack', plPlayedRack = initRack }
+  let player' = player { plRack = rack', plPlayedRack = initPlayedRack }
   return (Cont board, player', bag')
 
 -- Updates the result of the Scrabble

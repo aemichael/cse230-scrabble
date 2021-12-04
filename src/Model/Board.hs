@@ -6,7 +6,6 @@
 -- You can put a tile at a board position.
 -- You can delete a tile at a board position.
 -------------------------------------------------------------------------------
--- TODO: What is this for?
 {-# LANGUAGE DeriveFunctor #-}
 
 module Model.Board 
