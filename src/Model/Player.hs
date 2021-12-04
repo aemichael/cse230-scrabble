@@ -22,6 +22,8 @@ data Player = MkPlayer
     { plName  :: String 
     -- The rack for the player
     , plRack :: Rack
+    -- The rack to store tiles played in the current turn
+    , plPlayedRack :: Rack
     -- The score for the player
     , plScore :: Score
     } 
@@ -31,5 +33,6 @@ initPlayer :: Player
 initPlayer = MkPlayer 
     { plName = "player" 
     , plRack = initRack
+    , plPlayedRack = initRack
     , plScore = initScore
     } 
