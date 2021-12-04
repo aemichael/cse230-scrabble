@@ -18,6 +18,7 @@ module Model.Score
 where
 
 import Prelude
+import Model.Tile
 
 -------------------------------------------------------------------------------
 -- | Constants --------------------------------------------------------------------
@@ -39,5 +40,6 @@ getScore :: Score -> Score
 getScore curr_score = curr_score
 
 -- Updates the score
-updateScore :: Int -> Score -> Score
-updateScore points curr_score = points + curr_score
+updateScore :: [Tile] -> Score -> Score
+updateScore tiles currScore = (sum $ map getTileScore tiles) + currScore
+

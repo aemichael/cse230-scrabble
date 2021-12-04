@@ -11,9 +11,10 @@ import qualified Graphics.Vty as V
 import           Model
 import           Model.Bag
 import           Model.Board
+import           Model.PlayedRack
 import           Model.Player
 import           Model.Rack
-import           Model.PlayedRack
+import           Model.Score
 import           Model.Tile
 
 -- Startup function that runs prior to any events in the game.
@@ -127,15 +128,18 @@ playLetter tile s = do
 
 endTurn :: Scrabble -> IO (Result Board, Player, Bag)
 endTurn s = do
-  -- TODO: Update player's score
   let board = (scrabbleBoard s)
   let player = (scrabblePlayer s)
   let rack = (plRack player)
+  let playedRack = (plPlayedRack player)
+  let currScore = (plScore player)
   let bag = (scrabbleBag s)
+  -- Update the player's score
+  let newScore = updateScore (extractTiles playedRack) currScore
   -- Refill Rack
   (bag', rack') <- fillRack rack bag
   -- Clear playedRack
-  let player' = player { plRack = rack', plPlayedRack = initPlayedRack }
+  let player' = player { plRack = rack', plPlayedRack = initPlayedRack, plScore = newScore }
   return (Cont board, player', bag')
 
 -- Updates the result of the Scrabble
