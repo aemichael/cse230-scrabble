@@ -133,7 +133,7 @@ endTurn s = do
   let rack = (plRack player)
   let bag = (scrabbleBag s)
   -- Refill Rack
-  (rack', bag') <- fillRack rack bag
+  (bag', rack') <- fillRack rack bag
   -- Clear playedRack
   let player' = player { plRack = rack', plPlayedRack = initRack }
   return (Cont board, player', bag')

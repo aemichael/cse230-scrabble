@@ -42,11 +42,11 @@ initRack :: Rack
 initRack = []
 
 -- Fill a rack with random tiles drawn from the bag.
-fillRack :: Rack -> Bag -> IO (Rack, Bag)
+fillRack :: Rack -> Bag -> IO (Bag, Rack)
 fillRack rack bag = do
   let n = min (7 - length rack) (length bag)
-  (rack', bag') <- drawN n bag
-  return (rack', bag')
+  (bag', rack') <- drawN n bag
+  return (bag', rack ++ rack')
 
 -- Check if a tile is in a rack
 isTileInRack :: Tile -> Rack -> Bool
