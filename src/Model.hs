@@ -26,7 +26,6 @@ data Scrabble = MkScrabble
   , scrabbleBoard  :: Board.Board      -- ^ current board
   , scrabblePos    :: Board.BoardPos   -- ^ current cursor
   , scrabbleBag    :: Bag.Bag          -- ^ current bag
-  , scrabbleResult :: Board.Result ()  -- ^ current result      
   }
 
 -- Initialize the Scrabble game state
@@ -36,7 +35,6 @@ initScrabble = MkScrabble
   , scrabbleBoard  = Board.initBoard
   , scrabblePos    = head Board.boardPositions
   , scrabbleBag    = Bag.initBag
-  , scrabbleResult = Board.Cont ()
   }
 
 -- Checks if the coordinate (r,c) the same as the current position of the board
@@ -46,6 +44,7 @@ isCurr s r c = Board.pRow p == r && Board.pCol p == c
     p = scrabblePos s 
 
 -- Determines what the next GameState should be based on the current boardState
-next :: Scrabble -> Board.Result Board.Board -> Player.Player -> Bag.Bag -> Either (Board.Result ()) Scrabble
+next :: Scrabble -> Board.Result Board.Board -> Player.Player -> Bag.Bag -> Either Scrabble Scrabble
 next s Board.Retry     _ _  = Right s
 next s (Board.Cont b') p' bag'  = Right (s { scrabbleBoard = b', scrabblePlayer = p', scrabbleBag = bag'})
+next s (Board.End b') p' bag'  = Left (s { scrabbleBoard = b', scrabblePlayer = p', scrabbleBag = bag'})

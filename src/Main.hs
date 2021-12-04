@@ -13,6 +13,7 @@ import qualified Graphics.Vty as V
 
 import           Graphics.Vty.Attributes
 import           Model
+import           Model.Player
 import           View
 
 -- Starts the application from the initial Scrabble State
@@ -28,7 +29,7 @@ main = do
   -- This line is the entrypoint for the application
   res <- customMain initialVty buildVty (Just chan) app (Model.initScrabble)
   -- Print the results once the game terminates
-  print (scrabbleResult res) 
+  print (plScore (scrabblePlayer res)) 
 
 -- Constant that defines the application
 app :: App Scrabble Tick String

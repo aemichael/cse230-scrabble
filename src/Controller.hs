@@ -140,11 +140,16 @@ endTurn s = do
   (bag', rack') <- fillRack rack bag
   -- Clear playedRack
   let player' = player { plRack = rack', plPlayedRack = initPlayedRack, plScore = newScore }
-  return (Cont board, player', bag')
+  -- If the bag is empty, end the game
+  if (isBagEmpty bag)
+  then do
+    return (End board, player', bag')
+  else do
+    return (Cont board, player', bag')
 
 -- Updates the result of the Scrabble
 nextS :: Scrabble -> (Result Board, Player, Bag) -> EventM n (Next Scrabble)
 nextS s (board, player, bag) = do
   case next s board player bag of
     Right s' -> continue s'
-    Left res -> halt (s { scrabbleResult = res }) 
+    Left s' -> halt s'

@@ -4,6 +4,7 @@
 -- You can initialize a bag.
 -- You can draw 1 tile from the bag.
 -- You can draw N tiles from the bag.
+-- You can check if the bag is empty.
 -------------------------------------------------------------------------------
 module Model.Bag
 ( 
@@ -17,6 +18,7 @@ module Model.Bag
     , initBag
     , drawN
     , draw1
+    , isBagEmpty
 )
 where
 
@@ -58,3 +60,7 @@ draw1 bag = do
   i <- randomRIO (0, length bag - 1)
   let bag' = take (i - 1) bag ++ drop i bag
   return (bag', bag !! i)
+
+-- Check if the bag is empty
+isBagEmpty :: Bag -> Bool
+isBagEmpty bag = (length bag) == 0

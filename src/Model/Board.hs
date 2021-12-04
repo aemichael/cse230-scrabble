@@ -60,6 +60,7 @@ data BoardPos = BoardPos
 -- A Result is the definition of if a put succeed or fails on the board
 data Result a 
   = Retry 
+  | End a
   | Cont a
   deriving (Eq, Functor, Show)
 
