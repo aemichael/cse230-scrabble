@@ -37,8 +37,12 @@ import Prelude
 -- A played rack is a list of tile an board 
 type PlayedRack = [(Tile, BoardPos)]
 
+-- Extracts the list of played tiles.
 extractTiles :: PlayedRack -> [Tile]
 extractTiles xs = [x | (x,_) <- xs]
+-- More verbose implementation blow:
+-- extractTiles :: PlayedRack -> [String]
+-- extractTiles xs = [show tile ++ ";" ++ "(" ++ (show rowidx) ++ "," ++ (show colidx) ++ ")"  | (tile,pos) <- xs, let rowidx = pRow pos, let colidx = pCol pos]
 
 -- The initialize a PlayedRack
 initPlayedRack :: PlayedRack
