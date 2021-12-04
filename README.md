@@ -29,11 +29,11 @@ our new set of minimum goals.
 
 ### Minimum:
 - [x] Implement a basic UI that imitates a Scrabble board and seven-tile row for the current player
-- [ ] Implement actions and features required for basic Scrabble play:
+- [x] Implement actions and features required for basic Scrabble play:
   - [x] Player can freely place and remove their tiles to and from the board during their turn
   - [x] Player can finalize their play at the end of their turn
   - [x] Player receives tiles from the bag to maintain a set of seven at the end of their turn
-  - [ ] Track the player's current score
+  - [x] Track the player's current score
 - [ ] Support a single player playing one round of Scrabble against "themselves", which ends
   when the bag is empty
 
