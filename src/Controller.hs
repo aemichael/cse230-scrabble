@@ -110,9 +110,10 @@ right :: BoardPos -> BoardPos
 right p = p { pCol = min Model.Board.boardDim (pCol p + 1) } 
 
 -- Delete a letter from the board
-deleteLetter :: Scrabble -> IO (Result Board, PlayerMap, Bag)
+deleteLetter :: Scrabble -> IO (Result Board, PlayerMap, Int, Bag)
 deleteLetter s = do
   let bag = (scrabbleBag s)
+  let currPlayerKey = (scrabbleCurrPlayerKey s)
   let playerMap = (scrabblePlayersMap s)
   let player = getPlayer playerMap (scrabbleCurrPlayerKey s)
   let rack = (plRack player)
@@ -127,14 +128,15 @@ deleteLetter s = do
     let playedRack' = removeTileFromPlayedRack (tile, (scrabblePos s)) playedRack
     let player' = player { plRack = rack', plPlayedRack = playedRack' }
     let playerMap' = updatePlayer (scrabbleCurrPlayerKey s) player' playerMap
-    return (board', playerMap', bag)
+    return (board', playerMap', currPlayerKey, bag)
   else do
-    return (Retry, playerMap, bag)
+    return (Retry, playerMap, currPlayerKey, bag)
   
 -- Places a letter on the board
-playLetter :: Tile -> Scrabble -> IO (Result Board, PlayerMap, Bag)
+playLetter :: Tile -> Scrabble -> IO (Result Board, PlayerMap, Int, Bag)
 playLetter tile s = do
   let bag = (scrabbleBag s)
+  let currPlayerKey = (scrabbleCurrPlayerKey s)
   let playerMap = (scrabblePlayersMap s)
   let player = getPlayer playerMap (scrabbleCurrPlayerKey s)
   let rack = (plRack player)
@@ -148,12 +150,12 @@ playLetter tile s = do
     let playedRack' = insertTileIntoPlayedRack (tile, (scrabblePos s)) playedRack
     let player' = player { plRack = rack', plPlayedRack = playedRack' }
     let playerMap' = updatePlayer (scrabbleCurrPlayerKey s) player' playerMap
-    return (res, playerMap', bag)
+    return (res, playerMap', currPlayerKey, bag)
   -- If no, then retry
   else do
-    return (Retry, playerMap, bag)
+    return (Retry, playerMap, currPlayerKey, bag)
 
-endTurn :: Scrabble -> IO (Result Board, PlayerMap, Bag)
+endTurn :: Scrabble -> IO (Result Board, PlayerMap, Int, Bag)
 endTurn s = do
   let board = (scrabbleBoard s)
   let playerMap = (scrabblePlayersMap s)
@@ -169,16 +171,18 @@ endTurn s = do
   -- Clear playedRack
   let player' = player { plRack = rack', plPlayedRack = initPlayedRack, plScore = newScore }
   let playerMap' = updatePlayer (scrabbleCurrPlayerKey s) player' playerMap
+  -- Get the next player's key
+  let nextPlayerKey = getNextPlayerKey s
   -- If the bag is empty, end the game
   if (isBagEmpty bag)
   then do
-    return (End board, playerMap', bag')
+    return (End board, playerMap', nextPlayerKey, bag')
   else do
-    return (Cont board, playerMap', bag')
+    return (Cont board, playerMap', nextPlayerKey, bag')
 
 -- Updates the result of the Scrabble
-nextS :: Scrabble -> (Result Board, PlayerMap, Bag) -> EventM n (Next Scrabble)
-nextS s (board, playerMap, bag) = do
-  case next s board playerMap bag of
+nextS :: Scrabble -> (Result Board, PlayerMap, Int, Bag) -> EventM n (Next Scrabble)
+nextS s (board, playerMap, nextPlayerKey, bag) = do
+  case next s board playerMap nextPlayerKey bag of
     Right s' -> continue s'
     Left s' -> halt s'

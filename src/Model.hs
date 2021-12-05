@@ -41,6 +41,16 @@ initScrabble = MkScrabble
   , scrabbleBag    = Bag.initBag
   }
 
+-- Gets the next player key
+getNextPlayerKey :: Scrabble -> Int
+getNextPlayerKey scrabble = 
+  if (numPlayers - 1) == currPlayerKey
+  then 0
+  else currPlayerKey + 1
+  where
+    currPlayerKey = (scrabbleCurrPlayerKey scrabble)
+    numPlayers = (scrabbleNumPlayers scrabble)
+
 -- Checks if the coordinate (r,c) the same as the current position of the board
 isCurr :: Scrabble -> Int -> Int -> Bool
 isCurr s r c = Board.pRow p == r && Board.pCol p == c
@@ -48,7 +58,7 @@ isCurr s r c = Board.pRow p == r && Board.pCol p == c
     p = scrabblePos s 
 
 -- Determines what the next GameState should be based on the current boardState
-next :: Scrabble -> Board.Result Board.Board -> Player.PlayerMap -> Bag.Bag -> Either Scrabble Scrabble
-next s Board.Retry     _ _  = Right s
-next s (Board.Cont b') p' bag'  = Right (s { scrabbleBoard = b', scrabblePlayersMap = p', scrabbleBag = bag'})
-next s (Board.End b') p' bag'  = Left (s { scrabbleBoard = b', scrabblePlayersMap = p', scrabbleBag = bag'})
+next :: Scrabble -> Board.Result Board.Board -> Player.PlayerMap -> Int -> Bag.Bag -> Either Scrabble Scrabble
+next s Board.Retry     _ _ _  = Right s
+next s (Board.Cont b') p' k' bag'  = Right (s { scrabbleBoard = b', scrabblePlayersMap = p', scrabbleCurrPlayerKey = k',scrabbleBag = bag'})
+next s (Board.End b') p' k' bag'  = Left (s { scrabbleBoard = b', scrabblePlayersMap = p', scrabbleCurrPlayerKey = k', scrabbleBag = bag'})

@@ -25,7 +25,7 @@ import Model.Tile as Tile
 -- Draw UI entrypoint
 -------------------------------------------------------------------------------
 drawUI :: Model.Scrabble -> [Widget String]
-drawUI scrabble = [ (drawBoard scrabble) <+> ((drawPlayers scrabble) <=> (drawCurrentPlayer scrabble)) ]
+drawUI scrabble = [ (drawBoard scrabble) <+> ((drawCurrentPlayer scrabble) <=> (drawPlayers scrabble)) ]
 
 -------------------------------------------------------------------------------
 -- Draw UI for Board
