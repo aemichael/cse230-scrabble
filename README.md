@@ -39,9 +39,9 @@ our new set of minimum goals.
 
 ### Stretch Goals:
 - [ ] Track which tiles provide bonuses and update players' scores accordingly
-- [ ] Support 2 players playing Scrabble locally on the same instance of the program
-- [ ] A turn system in which each player alternates placing a word on the board
-- [ ] Detect the end of the game and allow players to close or restart the game
+- [x] Support 2 players playing Scrabble locally on the same instance of the program
+- [x] A turn system in which each player alternates placing a word on the board
+- [x] Detect the end of the game and allow players to close or restart the game
 
 ### Superlative Goals:
 - [ ] Enforce that plays are consecutive in a row or column and build off an existing play
@@ -49,5 +49,5 @@ our new set of minimum goals.
   the turn after they are played
 - [ ] Support swapping out all tiles in a player's row during their turn
 - [ ] Allow players to draw tiles to determine the play order
-- [ ] Support up to 4 players
+- [x] Support up to 4 players
 - [ ] Allow players to play Scrabble over a network connection
