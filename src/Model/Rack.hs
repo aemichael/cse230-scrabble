@@ -24,6 +24,7 @@ where
 import Model.Bag
 import Model.Tile
 import Prelude
+import Test.QuickCheck
 
 -------------------------------------------------------------------------------
 -- | Constants --------------------------------------------------------------------
@@ -62,3 +63,23 @@ removeTileFromRack tile (x:xs)
 -- Insert a tile into a rack
 insertTileIntoRack :: Tile -> Rack -> Rack
 insertTileIntoRack tile rack = rack ++ [tile]
+
+-------------------------------------------------------------------------------
+-- | Tests --------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+genRack :: Gen Rack
+genRack = resize 7 $ listOf genTile
+
+-- A refilled rack should always have 7 tiles
+prop_rack_refill_size :: Property
+prop_rack_refill_size = forAll genRack $ \rack -> ioProperty (checkRefillSize rack)
+  where
+    checkRefillSize :: Rack -> IO Bool
+    checkRefillSize rack = do
+      (_, rack') <- fillRack rack initBag
+      return $ length rack' == 7
+
+-- >>> quickCheck prop_rack_refill_size
+-- +++ OK, passed 100 tests.
+--

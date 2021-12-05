@@ -15,6 +15,10 @@ module Model.Tile
   -- Tile API
   , getTileScore
   , getTileCount
+
+  -- Testing
+  , genTile
+  , genTileAtFrequency
 )
 where
 
