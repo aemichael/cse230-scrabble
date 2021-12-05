@@ -18,8 +18,8 @@ import           Model.Score
 import           Model.Tile
 
 -- Startup function that runs prior to any events in the game.
-startup :: Scrabble -> EventM String Scrabble
-startup s = do
+startup :: Int -> Scrabble -> EventM String Scrabble
+startup playerCount s = do
   let player = scrabblePlayer s
   let rack = plRack player
   let bag = scrabbleBag s

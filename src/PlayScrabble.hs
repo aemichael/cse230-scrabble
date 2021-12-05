@@ -21,8 +21,8 @@ import           Model.Score
 import           View
 
 -- Plays Scrabble
-playScrabble :: IO (Score)
-playScrabble = do
+playScrabble :: Int -> IO (Score)
+playScrabble playerCount = do
   chan   <- newBChan 10
   forkIO  $ forever $ do
     writeBChan chan Tick
@@ -30,13 +30,13 @@ playScrabble = do
   let buildVty = V.mkVty V.defaultConfig
   initialVty <- buildVty
   -- This line is the entrypoint for the application
-  res <- customMain initialVty buildVty (Just chan) app (Model.initScrabble)
+  res <- customMain initialVty buildVty (Just chan) (app playerCount) (Model.initScrabble)
   -- Print the results once the game terminates
   return (plScore (scrabblePlayer res)) 
 
 -- Constant that defines the application
-app :: App Scrabble Tick String
-app = App
+app :: Int -> App Scrabble Tick String
+app playerCount = App
   { 
     -- Converts the current application state to the widgets to display
     appDraw         = View.drawUI 
@@ -45,7 +45,7 @@ app = App
     -- The function to call once an event occurs and needs to be handled
     , appHandleEvent  = Controller.control 
     -- The function to run when the application is started
-    , appStartEvent   = Controller.startup
+    , appStartEvent   = Controller.startup playerCount
     -- Attribute map
     , appAttrMap      = const (attrMap defAttr [])
   }
