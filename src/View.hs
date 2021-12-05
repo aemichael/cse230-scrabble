@@ -25,7 +25,7 @@ import Model.Tile as Tile
 -- Draw UI entrypoint
 -------------------------------------------------------------------------------
 drawUI :: Model.Scrabble -> [Widget String]
-drawUI scrabble = [ (drawBoard scrabble) <+> ((drawPlayers scrabble) <=> (drawBag scrabble)) ]
+drawUI scrabble = [ (drawBoard scrabble) <+> ((drawPlayers scrabble) <=> (drawCurrentPlayer scrabble)) ]
 
 -------------------------------------------------------------------------------
 -- Draw UI for Board
@@ -112,14 +112,28 @@ drawInfo action keys =
     <+> padLeft Max (padRight (Pad 1) $ str keys)
 
 -------------------------------------------------------------------------------
--- Draw UI for Bag
+-- Draw UI for Current Player
 -------------------------------------------------------------------------------
-drawBag :: Model.Scrabble -> Widget String
-drawBag scrabble = 
+drawCurrentPlayer :: Model.Scrabble -> Widget String
+drawCurrentPlayer scrabble = 
   withBorderStyle unicode
-  $ borderWithLabel (str "Bag")
+  $ borderWithLabel (str "Current Player")
   $ padTopBottom 1
   $ vBox
-  $ map (uncurry drawInfo)[ ("Num Tiles Left", numTilesLeft) ]
+  $ map (uncurry drawInfo)[ ("Current Player", playerName) ]
   where
-    numTilesLeft = show $ length $ scrabbleBag scrabble
+    player = getPlayer (scrabblePlayersMap scrabble) (scrabbleCurrPlayerKey scrabble)
+    playerName = plName $ player
+
+-------------------------------------------------------------------------------
+-- Draw UI for Bag
+-------------------------------------------------------------------------------
+-- drawBag :: Model.Scrabble -> Widget String
+-- drawBag scrabble = 
+--   withBorderStyle unicode
+--   $ borderWithLabel (str "Bag")
+--   $ padTopBottom 1
+--   $ vBox
+--   $ map (uncurry drawInfo)[ ("Num Tiles Left", numTilesLeft) ]
+--   where
+--     numTilesLeft = show $ length $ scrabbleBag scrabble
