@@ -8,24 +8,30 @@ import Test.QuickCheck
 main :: IO ()
 main = do 
   putStrLn "\nRunning my tests... "
-  mapM quickCheck allTests
+  mapM runTest allTests
   putStrLn "\nDone Testing"
   exitWith ExitSuccess
 
+runTest :: (String, Property) -> IO ()
+runTest (s, prop) = do
+  putStr "Running "
+  putStr s
+  putStrLn " ..."
+  quickCheck prop
 
-allTests :: [Property]
+allTests :: [(String, Property)]
 allTests = concat
   [ propTile
   , propRack
   ]
 
-propTile :: [Property]
+propTile :: [(String, Property)]
 propTile =
-  [ Tile.prop_tile_count 
-  , Tile.prop_tile_score
+  [ ("prop_tile_count", Tile.prop_tile_count)
+  , ("prop_tile_score", Tile.prop_tile_score)
   ]
 
-propRack :: [Property]
+propRack :: [(String, Property)]
 propRack =
-  [ Rack.prop_rack_refill_size
+  [ ("prop_rack_refill_size", Rack.prop_rack_refill_size)
   ]
