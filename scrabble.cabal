@@ -17,7 +17,9 @@ executable scrabble
                        vty, 
                        brick
   hs-source-dirs:      src
-  other-modules:       Model,
+  other-modules:       SetupScrabble,
+                       PlayScrabble,
+                       Model,
                        View, 
                        Controller,
                        Model.Bag
