@@ -11,7 +11,7 @@ one or more of the stretch goals listed below.
 
 The architecture of our application looks similar to that for the `brick-tac-toe` starter game,
 with `Board`, `Player`, and `Score` components. To model the particulars of Scrabble, we add
-`TileLetter`, which represents a single letter tile in the game; and `Bag`, which models the
+`Tile`, which represents a single letter tile in the game; and `Bag`, which models the
 bag from which tiles are drawn. We also modify the `Player` component to include a seven-tile
 `Rack`, which the player will use to create words.
 
@@ -28,13 +28,13 @@ our new set of minimum goals.
 ## Goals:
 
 ### Minimum:
-- [ ] Implement a basic UI that imitates a Scrabble board and seven-tile row for the current player
-- [ ] Implement actions and features required for basic Scrabble play:
-  - [ ] Player can freely place and remove their tiles to and from the board during their turn
-  - [ ] Player can finalize their play at the end of their turn
-  - [ ] Player receives tiles from the bag to maintain a set of seven at the end of their turn
-  - [ ] Track the player's current score
-- [ ] Support a single player playing one round of Scrabble against "themselves", which ends
+- [x] Implement a basic UI that imitates a Scrabble board and seven-tile row for the current player
+- [x] Implement actions and features required for basic Scrabble play:
+  - [x] Player can freely place and remove their tiles to and from the board during their turn
+  - [x] Player can finalize their play at the end of their turn
+  - [x] Player receives tiles from the bag to maintain a set of seven at the end of their turn
+  - [x] Track the player's current score
+- [x] Support a single player playing one round of Scrabble against "themselves", which ends
   when the bag is empty
 
 ### Stretch Goals:

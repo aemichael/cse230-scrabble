@@ -1,133 +1,85 @@
+-------------------------------------------------------------------------------
+-- This module defines the Scrabble Board.
+-- A Board has a map of board positions to tiles.
+-- You can initialize a board.
+-- You can get the tile at a board position.
+-- You can put a tile at a board position.
+-- You can delete a tile at a board position.
+-------------------------------------------------------------------------------
 {-# LANGUAGE DeriveFunctor #-}
+
 module Model.Board 
-  ( -- * Types
-    Board
-  , XO (..)
-  , Pos (..)
+(
+  -- Types
+  Board
+  , BoardPos (..)
   , Result (..)
 
-    -- * Board API
-  , dim
-  , (!)
-  , init
-  , put
-  , positions
-  , emptyPositions
-  , boardWinner
-  , flipXO
+  -- Constants
+  , boardDim
+  , boardPositions
 
-    -- * Moves
-  , up
-  , down
-  , left
-  , right
-  )
+  -- Board API
+  , initBoard
+  , getTile
+  , putTile
+  , deleteTile
+)
   where
 
-import Prelude hiding (init)
-import qualified Data.Map as M 
+import qualified Data.Map as M
+import           Model.Tile 
+import           Prelude hiding (init)
+
+-------------------------------------------------------------------------------
+-- | Constants --------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+-- Constant defining the dimension of the board
+boardDim :: Int
+boardDim = 15
+
+-- Constant defining a list of all positions on the board
+boardPositions :: [BoardPos]
+boardPositions = [ BoardPos r c | r <- [1..boardDim], c <- [1..boardDim] ] 
 
 -------------------------------------------------------------------------------
 -- | Board --------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
-type Board = M.Map Pos XO
+-- A Board is a map of positions to Tile instances
+type Board = M.Map BoardPos Tile
 
-data XO 
-  = X 
-  | O
-  deriving (Eq, Show)
-
-data Pos = Pos 
-  { pRow :: Int  -- 1 <= pRow <= dim 
-  , pCol :: Int  -- 1 <= pCol <= dim
+-- A BoardPos is a row (1 <= pRow <= dim) and column (1 <= pCol <= dim) pair
+data BoardPos = BoardPos 
+  { pRow :: Int
+  , pCol :: Int
   }
   deriving (Eq, Ord)
 
-(!) :: Board -> Pos -> Maybe XO 
-board ! pos = M.lookup pos board
-
-dim :: Int
-dim = 15
-
-positions :: [Pos]
-positions = [ Pos r c | r <- [1..dim], c <- [1..dim] ] 
-
-emptyPositions :: Board -> [Pos]
-emptyPositions board  = [ p | p <- positions, M.notMember p board]
-
-init :: Board
-init = M.empty
-
--------------------------------------------------------------------------------
--- | Playing a Move
--------------------------------------------------------------------------------
-                 
+-- A Result is the definition of if a put succeed or fails on the board
 data Result a 
-  = Draw 
-  | Win XO
-  | Retry 
+  = Retry 
+  | End a
   | Cont a
   deriving (Eq, Functor, Show)
 
-put :: Board -> XO -> Pos -> Result Board
-put board xo pos = case M.lookup pos board of 
+-- Initialize a board
+initBoard :: Board
+initBoard = M.empty
+
+-- Gets a Tile on the board at the position
+getTile :: Board -> BoardPos -> Maybe Tile 
+getTile board pos = M.lookup pos board
+
+-- Puts a Tile on the board at the position
+putTile :: Board -> Tile -> BoardPos -> Result Board
+putTile board lett pos = case M.lookup pos board of 
+  -- If there is a tile placed at this position, then retry
   Just _  -> Retry
-  Nothing -> result (M.insert pos xo board) 
+  -- If there is no tile placed at this position, then insert this Tile
+  Nothing -> Cont (M.insert pos lett board) 
 
-result :: Board -> Result Board
-result b 
-  | isFull b  = Draw
-  | wins b X  = Win  X 
-  | wins b O  = Win  O
-  | otherwise = Cont b
-
-wins :: Board -> XO -> Bool
-wins b xo = or [ winsPoss b xo ps | ps <- winPositions ]
-
-winsPoss :: Board -> XO -> [Pos] -> Bool
-winsPoss b xo ps = and [ b!p == Just xo | p <- ps ]
-
-winPositions :: [[Pos]]
-winPositions = rows ++ cols ++ diags 
-
-rows, cols, diags :: [[Pos]]
-rows  = [[Pos r c | c <- [1..dim]] | r <- [1..dim]]
-cols  = [[Pos r c | r <- [1..dim]] | c <- [1..dim]]
-diags = [[Pos i i | i <- [1..dim]], [Pos i (dim+1-i) | i <- [1..dim]]]
-
-isFull :: Board -> Bool
-isFull b = M.size b == dim * dim
-
--------------------------------------------------------------------------------
--- | Moves 
--------------------------------------------------------------------------------
-
-up :: Pos -> Pos 
-up p = p 
-  { pRow = max 1 (pRow p - 1) 
-  } 
-
-down :: Pos -> Pos
-down p = p 
-  { pRow = min dim (pRow p + 1) 
-  } 
-
-left :: Pos -> Pos 
-left p = p 
-  { pCol   = max 1 (pCol p - 1) 
-  } 
-
-right :: Pos -> Pos 
-right p = p 
-  { pCol = min dim (pCol p + 1) 
-  } 
-
-boardWinner :: Result a -> Maybe XO
-boardWinner (Win xo) = Just xo
-boardWinner _        = Nothing
-
-flipXO :: XO -> XO
-flipXO X = O
-flipXO O = X
-
+-- Delete a tile at a board position
+deleteTile :: Board -> BoardPos -> Result Board
+deleteTile board boardpos = Cont (M.delete boardpos board)

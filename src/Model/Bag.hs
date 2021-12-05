@@ -1,47 +1,68 @@
+-------------------------------------------------------------------------------
+-- This module defines the Scrabble Bag.
+-- A Bag has a list of tiles.
+-- You can initialize a bag.
+-- You can draw 1 tile from the bag.
+-- You can draw N tiles from the bag.
+-- You can check if the bag is empty.
+-------------------------------------------------------------------------------
 module Model.Bag
-  ( -- * Types
+( 
+    -- Types
     Bag
 
-    -- * Bag operations
-  , initBag
-  , drawN
-  , draw1
-  )
-  where
+    -- Constants
+    , capitals
+    
+    -- Bag API
+    , initBag
+    , drawN
+    , draw1
+    , isBagEmpty
+)
+where
 
-import Prelude
 import Model.Tile
-import System.Random -- (Random(randomRIO))
+import Prelude
+import System.Random
 
 -------------------------------------------------------------------------------
--- | Bag and Tile Withdrawal --------------------------------------------------
+-- | Constants --------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
-type Bag = [TileLetter]
+-- Constant list of characters representing all capital letters
+capitals :: [Char]
+capitals = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q',
+           'R','S','T','U','V','W','X','Y','Z']
 
--- | Initialize Scrabble bag with all 100 tiles
+-------------------------------------------------------------------------------
+-- | Bag --------------------------------------------------
+-------------------------------------------------------------------------------
+
+-- A Bag is a list of Tiles
+type Bag = [Tile]
+
+-- Initialize the Scrabble bag with all 100 tiles
 initBag :: Bag
-initBag = concat
-  [ replicate (tileCount x) x
-  | x <- Blank : map Letter capitals
+initBag = concat [ 
+    replicate (getTileCount x) x | x <- Letter '*' : map Letter capitals 
   ]
 
--- | Draw N random tiles from the bag
-drawN :: Int -> Bag -> IO (Bag, [TileLetter])
+-- Draw N random tiles from the bag
+drawN :: Int -> Bag -> IO (Bag, [Tile])
 drawN 0 bag = return (bag, [])
 drawN n bag = do
   (bag' , x)  <- draw1 bag
   (bag'', xs) <- drawN (n-1) bag'
   return (bag'', x:xs)
 
-draw1 :: Bag -> IO (Bag, TileLetter)
+-- Draw 1 random tile from the bag
+draw1 :: Bag -> IO (Bag, Tile)
 draw1 bag = do
   i <- randomRIO (0, length bag - 1)
-  let bag' = take (i - 1) bag ++ drop i bag
+  let bag' = take i bag ++ drop (i + 1) bag
   return (bag', bag !! i)
 
-
-
-capitals :: [Char]
-capitals = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q',
-           'R','S','T','U','V','W','X','Y','Z']
+-- Check if the bag is empty
+isBagEmpty :: Bag -> Bool
+isBagEmpty bag = (length bag) == 0
