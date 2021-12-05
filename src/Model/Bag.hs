@@ -57,3 +57,11 @@ draw1 bag = do
 -- Check if the bag is empty
 isBagEmpty :: Bag -> Bool
 isBagEmpty bag = (length bag) == 0
+
+-------------------------------------------------------------------------------
+-- | Tests --------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+-- Test that drawN / draw1 work as expected on bag size
+
+-- Test that the bag eventually becomes empty on repeated draws

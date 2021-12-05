@@ -18,6 +18,9 @@ module Model.Rack
     , isTileInRack
     , removeTileFromRack
     , insertTileIntoRack
+
+    -- Tests
+    , prop_rack_refill_size
 )
 where
 

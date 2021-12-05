@@ -19,6 +19,8 @@ module Model.Tile
   -- Testing
   , genTile
   , genTileAtFrequency
+  , prop_tile_count
+  , prop_tile_score
 )
 where
 
