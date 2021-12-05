@@ -12,6 +12,5 @@ import SetupScrabble
 main :: IO ()
 main = do
   playerCount <- setupScrabble
-  putStrLn $ "Player Count: " ++ show playerCount
-  score <- playScrabble playerCount
-  putStrLn $ "Your final score: " ++ show score
+  scores <- playScrabble playerCount
+  putStrLn $ scores

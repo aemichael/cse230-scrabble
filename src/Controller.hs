@@ -158,6 +158,9 @@ playLetter tile s = do
   else do
     return (Retry, playerMap, currPlayerKey, bag)
 
+-- When a player ends their turn, the player's score will be updated, their
+-- rack will be refilled, their playedRack will be cleared, the nextPlayer is
+-- chosen, and we check if the bag is empty (which terminates the game).
 endTurn :: Scrabble -> IO (Result Board, PlayerMap, Int, Bag)
 endTurn s = do
   let board = (scrabbleBoard s)
@@ -168,10 +171,15 @@ endTurn s = do
   let currScore = (plScore player)
   let bag = (scrabbleBag s)
   -- Update the player's score
+  -- NOTE: This is where the new score is actually computed
+  -- PlayedRack is a [(Tile, BoardPos)] so the board pos info can be used
+  -- to compute which tiles are on bonus board positions and also search fromEnum
+  -- a board position the four directions for the tiles it is connected to.
   let newScore = updateScore (extractTiles playedRack) currScore
   -- Refill Rack
   (bag', rack') <- fillRack rack bag
   -- Clear playedRack
+  -- NOTE: This is where the new score is actually updated for the player
   let player' = player { plRack = rack', plPlayedRack = initPlayedRack, plScore = newScore }
   let playerMap' = updatePlayer (scrabbleCurrPlayerKey s) player' playerMap
   -- Get the next player's key

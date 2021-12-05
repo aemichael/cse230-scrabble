@@ -12,16 +12,15 @@ import           Brick.BChan (newBChan, writeBChan)
 import           Control.Concurrent (threadDelay, forkIO)
 import           Control.Monad (forever)
 import           Controller
-import qualified Graphics.Vty as V
 
+import qualified Graphics.Vty as V
 import           Graphics.Vty.Attributes
 import           Model
 import           Model.Player
-import           Model.Score
 import           View
 
 -- Plays Scrabble
-playScrabble :: Int -> IO (Score)
+playScrabble :: Int -> IO (String)
 playScrabble playerCount = do
   chan   <- newBChan 10
   forkIO  $ forever $ do
@@ -32,8 +31,8 @@ playScrabble playerCount = do
   -- This line is the entrypoint for the application
   res <- customMain initialVty buildVty (Just chan) (app playerCount) (Model.initScrabble)
   -- Print the results once the game terminates
-  let player = getPlayer (scrabblePlayersMap res) (scrabbleCurrPlayerKey res)
-  return (plScore player) 
+  let outputString = printPlayerScores (scrabblePlayersMap res)
+  return (outputString)
 
 -- Constant that defines the application
 app :: Int -> App Scrabble Tick String

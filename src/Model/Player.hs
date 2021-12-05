@@ -14,9 +14,10 @@ module Model.Player
     , initPlayersMap
     , initCurrPlayerKey
 
-    -- PlayerMapAPI
+    -- PlayerMap API
     , getPlayer
     , updatePlayer
+    , printPlayerScores
 )
 where
 
@@ -39,6 +40,22 @@ data Player = MkPlayer
 
 -- A Map of Ints to players
 type PlayerMap = M.Map Int Player
+
+createScoresString :: String -> Score -> String
+createScoresString name score = name ++ ": " ++ show score
+
+printPlayerScores :: PlayerMap -> String
+printPlayerScores playerMap = 
+    unlines (["\nFinal Scrabble Scores:"] ++ (zipWith createScoresString playerNames playerScores))
+    where
+        playerScores = map getPlayerScore (M.toList playerMap)
+        playerNames = map getPlayerName (M.toList playerMap)
+        
+getPlayerName :: (Int, Player) -> String
+getPlayerName player = plName (snd player)
+
+getPlayerScore :: (Int, Player) -> Score
+getPlayerScore player = plScore (snd player)
 
 getPlayer :: PlayerMap -> Int -> Player
 getPlayer playerMap = (playerMap M.!)
