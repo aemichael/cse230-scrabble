@@ -6,16 +6,24 @@
 module Model.Player 
 (
     -- Types
-    Player (..),
+    Player (..)
+    , PlayerMap
 
     -- Player API
-    initPlayer
+    , initPlayer
+    , initPlayersMap
+    , initCurrPlayerKey
+
+    -- PlayerMapAPI
+    , getPlayer
+    , updatePlayer
 )
 where
 
-import Model.PlayedRack
-import Model.Rack
-import Model.Score
+import qualified Data.Map as M
+import           Model.PlayedRack
+import           Model.Rack
+import           Model.Score
 
 -- A player has a name.
 data Player = MkPlayer 
@@ -29,11 +37,28 @@ data Player = MkPlayer
     , plScore :: Score
     } 
 
+-- A Map of Ints to players
+type PlayerMap = M.Map Int Player
+
+getPlayer :: PlayerMap -> Int -> Player
+getPlayer playerMap = (playerMap M.!)
+
+updatePlayer :: Int -> Player -> PlayerMap -> PlayerMap
+updatePlayer key player playerMap = M.insert key player playerMap
+
+-- Initialize the current player index
+initCurrPlayerKey :: Int
+initCurrPlayerKey = 0
+
+-- Initialize a map of players
+initPlayersMap :: PlayerMap
+initPlayersMap = M.empty
+
 -- Initialize a player
-initPlayer :: Player 
-initPlayer = MkPlayer 
-    { plName = "player" 
-    , plRack = initRack
+initPlayer :: Int -> Rack -> Player 
+initPlayer playerNum playerRack = MkPlayer 
+    { plName = ("player " ++ show playerNum)
+    , plRack = playerRack
     , plPlayedRack = initPlayedRack
     , plScore = initScore
     } 

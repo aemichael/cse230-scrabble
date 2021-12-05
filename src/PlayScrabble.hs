@@ -32,7 +32,8 @@ playScrabble playerCount = do
   -- This line is the entrypoint for the application
   res <- customMain initialVty buildVty (Just chan) (app playerCount) (Model.initScrabble)
   -- Print the results once the game terminates
-  return (plScore (scrabblePlayer res)) 
+  let player = getPlayer (scrabblePlayersMap res) (scrabbleCurrPlayerKey res)
+  return (plScore player) 
 
 -- Constant that defines the application
 app :: Int -> App Scrabble Tick String

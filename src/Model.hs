@@ -20,18 +20,20 @@ data Tick = Tick
 -- Scrabble -------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
--- A Scrabble has a player, board, current cursor, bag, and result.
+-- A Scrabble has a currentPlayer, map of all players, board, current cursor, bag, and result.
 data Scrabble = MkScrabble
-  { scrabblePlayer :: Player.Player    -- ^ current player
-  , scrabbleBoard  :: Board.Board      -- ^ current board
-  , scrabblePos    :: Board.BoardPos   -- ^ current cursor
-  , scrabbleBag    :: Bag.Bag          -- ^ current bag
+  { scrabbleCurrPlayerKey :: Int                  -- ^ current player index
+  , scrabblePlayersMap :: Player.PlayerMap -- ^ current players map
+  , scrabbleBoard  :: Board.Board                 -- ^ current board
+  , scrabblePos    :: Board.BoardPos              -- ^ current cursor
+  , scrabbleBag    :: Bag.Bag                     -- ^ current bag
   }
 
 -- Initialize the Scrabble game state
 initScrabble :: Scrabble
 initScrabble = MkScrabble 
-  { scrabblePlayer = Player.initPlayer
+  { scrabbleCurrPlayerKey = Player.initCurrPlayerKey
+  , scrabblePlayersMap = Player.initPlayersMap
   , scrabbleBoard  = Board.initBoard
   , scrabblePos    = head Board.boardPositions
   , scrabbleBag    = Bag.initBag
@@ -44,7 +46,7 @@ isCurr s r c = Board.pRow p == r && Board.pCol p == c
     p = scrabblePos s 
 
 -- Determines what the next GameState should be based on the current boardState
-next :: Scrabble -> Board.Result Board.Board -> Player.Player -> Bag.Bag -> Either Scrabble Scrabble
+next :: Scrabble -> Board.Result Board.Board -> Player.PlayerMap -> Bag.Bag -> Either Scrabble Scrabble
 next s Board.Retry     _ _  = Right s
-next s (Board.Cont b') p' bag'  = Right (s { scrabbleBoard = b', scrabblePlayer = p', scrabbleBag = bag'})
-next s (Board.End b') p' bag'  = Left (s { scrabbleBoard = b', scrabblePlayer = p', scrabbleBag = bag'})
+next s (Board.Cont b') p' bag'  = Right (s { scrabbleBoard = b', scrabblePlayersMap = p', scrabbleBag = bag'})
+next s (Board.End b') p' bag'  = Left (s { scrabbleBoard = b', scrabblePlayersMap = p', scrabbleBag = bag'})

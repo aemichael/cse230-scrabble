@@ -7,6 +7,7 @@ import           Brick hiding (Result)
 import qualified Brick.Types as T
 import           Control.Monad.IO.Class (MonadIO(liftIO))
 
+import qualified Data.Map as M
 import qualified Graphics.Vty as V
 import           Model
 import           Model.Bag
@@ -17,15 +18,37 @@ import           Model.Rack
 import           Model.Score
 import           Model.Tile
 
+createPlayer :: Int -> Bag -> IO (Player, Bag)
+createPlayer playerNum bag = do
+  -- Create a new rack for this player
+  (bag', rack') <- fillRack initRack bag
+  -- Create the player
+  let player = initPlayer playerNum rack'
+  -- Return the newly created player and new bag
+  return (player, bag')
+
+createPlayers :: Bag -> [Int] -> IO (PlayerMap, Bag)
+createPlayers bag [] = do
+  return (M.empty, bag)
+createPlayers bag (x:xs) = do
+  -- Create the new player and get the new bag
+  (player', bag') <- createPlayer x bag
+  -- Make the recursive call with the rest of the player indicies and the new bag
+  (playerMap, bag'') <- createPlayers bag' xs
+  -- Update the map with the player we just created
+  let playerMap' = M.insert x player' playerMap
+  -- Return the map of players and new bag
+  return (playerMap', bag'')
+
 -- Startup function that runs prior to any events in the game.
 startup :: Int -> Scrabble -> EventM String Scrabble
 startup playerCount s = do
-  let player = scrabblePlayer s
-  let rack = plRack player
+  -- Get the bag for the game
   let bag = scrabbleBag s
-  (bag', rack') <- liftIO (fillRack rack bag)
-  let player' = player { plRack = rack' }
-  return (s { scrabblePlayer = player', scrabbleBag = bag'});
+  -- Create the map of players
+  (playerMap', bag') <- liftIO (createPlayers bag (take playerCount [0..]) )
+  -- Return the new game state with the player map and the new bag
+  return (s { scrabblePlayersMap = playerMap', scrabbleBag = bag'});
 
 -- Main control function that is used to handle events once they occur
 control :: Scrabble -> BrickEvent n Tick -> EventM n (Next Scrabble)
@@ -87,10 +110,11 @@ right :: BoardPos -> BoardPos
 right p = p { pCol = min Model.Board.boardDim (pCol p + 1) } 
 
 -- Delete a letter from the board
-deleteLetter :: Scrabble -> IO (Result Board, Player, Bag)
+deleteLetter :: Scrabble -> IO (Result Board, PlayerMap, Bag)
 deleteLetter s = do
   let bag = (scrabbleBag s)
-  let player = (scrabblePlayer s)
+  let playerMap = (scrabblePlayersMap s)
+  let player = getPlayer playerMap (scrabbleCurrPlayerKey s)
   let rack = (plRack player)
   let playedRack = (plPlayedRack player)
   let board = (scrabbleBoard s)
@@ -102,15 +126,17 @@ deleteLetter s = do
     let rack' = insertTileIntoRack tile rack
     let playedRack' = removeTileFromPlayedRack (tile, (scrabblePos s)) playedRack
     let player' = player { plRack = rack', plPlayedRack = playedRack' }
-    return (board', player', bag)
+    let playerMap' = updatePlayer (scrabbleCurrPlayerKey s) player' playerMap
+    return (board', playerMap', bag)
   else do
-    return (Retry, player, bag)
+    return (Retry, playerMap, bag)
   
 -- Places a letter on the board
-playLetter :: Tile -> Scrabble -> IO (Result Board, Player, Bag)
+playLetter :: Tile -> Scrabble -> IO (Result Board, PlayerMap, Bag)
 playLetter tile s = do
   let bag = (scrabbleBag s)
-  let player = (scrabblePlayer s)
+  let playerMap = (scrabblePlayersMap s)
+  let player = getPlayer playerMap (scrabbleCurrPlayerKey s)
   let rack = (plRack player)
   let playedRack = (plPlayedRack player)
   -- Check if this letter is in the player's rack
@@ -121,15 +147,17 @@ playLetter tile s = do
     let rack' = removeTileFromRack tile rack
     let playedRack' = insertTileIntoPlayedRack (tile, (scrabblePos s)) playedRack
     let player' = player { plRack = rack', plPlayedRack = playedRack' }
-    return (res, player', bag)
+    let playerMap' = updatePlayer (scrabbleCurrPlayerKey s) player' playerMap
+    return (res, playerMap', bag)
   -- If no, then retry
   else do
-    return (Retry, player, bag)
+    return (Retry, playerMap, bag)
 
-endTurn :: Scrabble -> IO (Result Board, Player, Bag)
+endTurn :: Scrabble -> IO (Result Board, PlayerMap, Bag)
 endTurn s = do
   let board = (scrabbleBoard s)
-  let player = (scrabblePlayer s)
+  let playerMap = (scrabblePlayersMap s)
+  let player = getPlayer playerMap (scrabbleCurrPlayerKey s) 
   let rack = (plRack player)
   let playedRack = (plPlayedRack player)
   let currScore = (plScore player)
@@ -140,16 +168,17 @@ endTurn s = do
   (bag', rack') <- fillRack rack bag
   -- Clear playedRack
   let player' = player { plRack = rack', plPlayedRack = initPlayedRack, plScore = newScore }
+  let playerMap' = updatePlayer (scrabbleCurrPlayerKey s) player' playerMap
   -- If the bag is empty, end the game
   if (isBagEmpty bag)
   then do
-    return (End board, player', bag')
+    return (End board, playerMap', bag')
   else do
-    return (Cont board, player', bag')
+    return (Cont board, playerMap', bag')
 
 -- Updates the result of the Scrabble
-nextS :: Scrabble -> (Result Board, Player, Bag) -> EventM n (Next Scrabble)
-nextS s (board, player, bag) = do
-  case next s board player bag of
+nextS :: Scrabble -> (Result Board, PlayerMap, Bag) -> EventM n (Next Scrabble)
+nextS s (board, playerMap, bag) = do
+  case next s board playerMap bag of
     Right s' -> continue s'
     Left s' -> halt s'

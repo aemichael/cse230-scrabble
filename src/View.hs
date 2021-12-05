@@ -94,10 +94,11 @@ drawPlayer scrabble =
   $ vBox
   $ map (uncurry drawInfo)[ ("Current Score", playerScore), ("Rack", playerRack), ("Played Rack", playerPlayedRack) ]
   where
-    playerName = plName $ scrabblePlayer scrabble
-    playerScore = show $ plScore $ (scrabblePlayer scrabble)
-    playerRack = show $ plRack $ (scrabblePlayer scrabble)
-    playerPlayedRack = show $ PlayedRack.extractTiles $ plPlayedRack $ (scrabblePlayer scrabble)
+    player = getPlayer (scrabblePlayersMap scrabble) (scrabbleCurrPlayerKey scrabble)
+    playerName = plName $ player
+    playerScore = show $ plScore $ player
+    playerRack = show $ plRack $ player
+    playerPlayedRack = show $ PlayedRack.extractTiles $ plPlayedRack $ player
 
 drawInfo :: String -> String -> Widget String
 drawInfo action keys =
