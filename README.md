@@ -42,12 +42,14 @@ our new set of minimum goals.
 - [ ] Score calculation takes adjacent words/letters into consideration, even if not played
   on that turn
 - [ ] End-of-game scores subtract the score of any tiles remaining on each player's rack
+- [ ] Allow players to place tiles with capital letters and space (for blank tiles)
 
 ### Stretch Goals:
 - [ ] Track which tiles provide bonuses and update players' scores accordingly
 - [x] Support 2 players playing Scrabble locally on the same instance of the program
 - [x] A turn system in which each player alternates placing a word on the board
 - [x] Detect the end of the game and allow players to close or restart the game
+- [ ] Hide the rack of all players other than the current one
 
 ### Superlative Goals:
 - [ ] Enforce that plays are consecutive in a row or column and build off an existing play
