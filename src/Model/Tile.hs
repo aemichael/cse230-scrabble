@@ -122,3 +122,21 @@ getTileCount tile = case M.lookup tile counts of
   Just count  -> count
   -- If Not Found, this should never happen
   Nothing -> error "This should not occur"
+
+-------------------------------------------------------------------------------
+-- | Tile Tests --------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+-- >>> prop_getTileScore 'A'
+-- True
+--
+
+prop_getTileScore :: Char -> Bool
+prop_getTileScore char = Just (getTileScore (Letter char)) == M.lookup (Letter char) scores
+
+-- >>> prop_getTileCount 'A'
+-- True
+--
+
+prop_getTileCount :: Char -> Bool
+prop_getTileCount char = Just (getTileCount (Letter char)) == M.lookup (Letter char) counts
