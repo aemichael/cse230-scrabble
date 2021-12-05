@@ -34,31 +34,33 @@ import Prelude
 -- PlayedRack --------------------------------------------------
 -------------------------------------------------------------------------------
 
--- A played rack is a list of tile an board 
+-- | A played rack is a list of tiles placed at board positions
 type PlayedRack = [(Tile, BoardPos)]
 
--- Extracts the list of played tiles.
+-- | Extracts the list of played tiles.
 extractTiles :: PlayedRack -> [Tile]
 extractTiles xs = [x | (x,_) <- xs]
 -- More verbose implementation blow:
 -- extractTiles :: PlayedRack -> [String]
--- extractTiles xs = [show tile ++ ";" ++ "(" ++ (show rowidx) ++ "," ++ (show colidx) ++ ")"  | (tile,pos) <- xs, let rowidx = pRow pos, let colidx = pCol pos]
+-- extractTiles xs = [ show tile ++ ";" ++ "(" ++ (show rowidx) ++ "," ++ (show colidx) ++ ")"  
+--                   | (tile,pos) <- xs, let rowidx = pRow pos, let colidx = pCol pos
+--                   ]
 
--- The initialize a PlayedRack
+-- | Initialize an empty PlayedRack
 initPlayedRack :: PlayedRack
 initPlayedRack = []
 
--- Check if a tile is in a rack
+-- | Check if a (tile, pos) is in the played rack
 isTileInPlayedRack :: (Tile, BoardPos) -> PlayedRack -> Bool
 isTileInPlayedRack tile rack = elem tile rack
 
--- Removes the first occurrence of a tile from a rack.
+-- | Removes the first occurrence of a (tile, pos) from a played rack.
 removeTileFromPlayedRack :: (Tile, BoardPos) -> PlayedRack -> PlayedRack
 removeTileFromPlayedRack _ [] = []
 removeTileFromPlayedRack pair (x:xs)
   | x == pair = xs
   | otherwise = x : removeTileFromPlayedRack pair xs
 
--- Insert a tile into a rack
+-- | Insert a (tile, pos) into a played rack
 insertTileIntoPlayedRack :: (Tile, BoardPos) -> PlayedRack -> PlayedRack
 insertTileIntoPlayedRack tile rack = rack ++ [tile]

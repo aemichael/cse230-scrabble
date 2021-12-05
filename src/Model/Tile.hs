@@ -32,24 +32,25 @@ import Test.QuickCheck
 -- | Tile --------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
--- A Tile is either Blank or has a Letter
-data Tile = Letter Char deriving (Eq)
+-- | A Tile is either Blank or a Letter with associated character
+data Tile = Letter Char
+  deriving (Eq)
 
--- Define how to show an instance of a Tile
+-- | Define how to show an instance of a Tile
 instance Show Tile where
   show (Letter x) = [x]
 
--- Define how to order an instance of a Tile
+-- | Define how to order an instance of a Tile
 instance Ord Tile where
   (<=) (Letter '*')      _          = True
   (<=) _          (Letter '*')      = False
   (<=) (Letter x) (Letter y) = (x <= y)
 
--- Look up the score of a tile letter
+-- | Look up the score of a tile letter
 getTileScore :: Tile -> Int
 getTileScore = (scores M.!)
 
--- Look up the count of a tile letter in the game
+-- | Look up the count of a tile letter in the game
 getTileCount :: Tile -> Int
 getTileCount = (counts M.!)
 
@@ -62,7 +63,7 @@ genTile = do
   t <- elements $ Letter '*' : map Letter capitals
   return t
 
--- Generate a tile at the expected frequency in normal Scrabble play
+-- | Generate a tile at the expected frequency in normal Scrabble play
 genTileAtFrequency :: Gen Tile
 genTileAtFrequency = do
   t <- elements $ concat
@@ -72,6 +73,7 @@ genTileAtFrequency = do
 
 -- Simple sanity checks on getTileScore and getTileCount
 
+-- | Requires that a tile's retrieved score matches its score in the database
 prop_tile_score :: Property
 prop_tile_score = forAll genTile $
   \tile -> (getTileScore tile == scores M.! tile)
@@ -80,6 +82,7 @@ prop_tile_score = forAll genTile $
 -- +++ OK, passed 100 tests.
 --
 
+-- | Requires that a tile's retrieved count matches its count in the database
 prop_tile_count :: Property
 prop_tile_count = forAll genTile $
   \tile -> (getTileCount tile == counts M.! tile)
@@ -93,12 +96,12 @@ prop_tile_count = forAll genTile $
 -- | Constants --------------------------------------------------------------------
 ----------------------------------------------------------------------------------
 
--- Constant list of characters representing all capital letters
+-- | Constant list of characters representing all capital letters
 capitals :: [Char]
 capitals = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q',
            'R','S','T','U','V','W','X','Y','Z']
 
--- Constant map of Tile to Int containing the score of each Tile in the game
+-- | Maps each tile to its expected score in the game
 scores :: M.Map Tile Int
 scores = M.fromList
   [ (Letter '*', 0 )
@@ -130,7 +133,7 @@ scores = M.fromList
   , (Letter 'Z', 10)
   ]
 
--- Constant map of Tile to Int containing the counts of that Tile in the game
+-- | Maps each tile to its expected count in the game
 counts :: M.Map Tile Int
 counts = M.fromList
   [ (Letter '*', 2 )

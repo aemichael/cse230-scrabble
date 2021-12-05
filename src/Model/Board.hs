@@ -35,11 +35,11 @@ import           Prelude hiding (init)
 -- | Constants --------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
--- Constant defining the dimension of the board
+-- | Constant defining the dimension of the board
 boardDim :: Int
 boardDim = 15
 
--- Constant defining a list of all positions on the board
+-- | Constant defining a list of all positions on the board
 boardPositions :: [BoardPos]
 boardPositions = [ BoardPos r c | r <- [1..boardDim], c <- [1..boardDim] ] 
 
@@ -47,32 +47,32 @@ boardPositions = [ BoardPos r c | r <- [1..boardDim], c <- [1..boardDim] ]
 -- | Board --------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
--- A Board is a map of positions to Tile instances
+-- | A Board is a map of positions to Tile instances
 type Board = M.Map BoardPos Tile
 
--- A BoardPos is a row (1 <= pRow <= dim) and column (1 <= pCol <= dim) pair
+-- | A BoardPos is a row (1 <= pRow <= dim) and column (1 <= pCol <= dim) pair
 data BoardPos = BoardPos 
   { pRow :: Int
   , pCol :: Int
   }
   deriving (Eq, Ord)
 
--- A Result is the definition of if a put succeed or fails on the board
+-- | A Result is the definition of if a put succeed or fails on the board
 data Result a 
   = Retry 
   | End a
   | Cont a
   deriving (Eq, Functor, Show)
 
--- Initialize a board
+-- | Initialize a board
 initBoard :: Board
 initBoard = M.empty
 
--- Gets a Tile on the board at the position
+-- | Gets a Tile on the board at the position
 getTile :: Board -> BoardPos -> Maybe Tile 
 getTile board pos = M.lookup pos board
 
--- Puts a Tile on the board at the position
+-- | Puts a Tile on the board at the position
 putTile :: Board -> Tile -> BoardPos -> Result Board
 putTile board lett pos = case M.lookup pos board of 
   -- If there is a tile placed at this position, then retry
@@ -80,6 +80,6 @@ putTile board lett pos = case M.lookup pos board of
   -- If there is no tile placed at this position, then insert this Tile
   Nothing -> Cont (M.insert pos lett board) 
 
--- Delete a tile at a board position
+-- | Delete a tile at a board position
 deleteTile :: Board -> BoardPos -> Result Board
 deleteTile board boardpos = Cont (M.delete boardpos board)

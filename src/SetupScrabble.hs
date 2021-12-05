@@ -14,11 +14,11 @@ import qualified Brick.Widgets.Center as C
 import qualified Graphics.Vty as V
 import           System.Exit (exitSuccess)
 
--- Sets up Scrabble
+-- | Sets up Scrabble
 setupScrabble :: IO Int
 setupScrabble = defaultMain app Nothing >>= maybe exitSuccess return
 
--- Defines the application
+-- | Defines the application
 app :: App (Maybe Int) e ()
 app = App
   { appDraw         = const [ui]
@@ -28,7 +28,7 @@ app = App
   , appChooseCursor = neverShowCursor
   }
 
--- Draws the UI to choose the number of players
+-- | Draws the UI to choose the number of players
 ui :: Widget ()
 ui =
   padLeft (Pad 19)
@@ -41,13 +41,13 @@ ui =
     $ C.center
     $ str " Choose Number of Players (1-4)"
 
--- Allows for choosing 1-4 players in the game
+-- | Setup event allows players to choose the number of players for the game.
+-- Players can exit the setup event with `Esc`, `q`, or `Q`.
 handleEvent :: Maybe Int -> BrickEvent () e -> EventM () (Next (Maybe Int))
 handleEvent n (VtyEvent (V.EvKey V.KEsc        _)) = halt n
 handleEvent n (VtyEvent (V.EvKey (V.KChar 'q') _)) = halt n
 handleEvent n (VtyEvent (V.EvKey (V.KChar 'Q') _)) = halt n
-handleEvent n (VtyEvent (V.EvKey (V.KChar d) [])) =
-  if d `elem` ['1' .. '4']
-  then halt $ Just (read [d])
-  else continue n
-handleEvent n _ = continue n
+handleEvent n (VtyEvent (V.EvKey (V.KChar d)  []))
+  | d `elem` ['1'..'4'] = halt $ Just (read [d])
+  | otherwise           = continue n
+handleEvent n _         = continue n

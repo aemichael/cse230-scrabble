@@ -65,7 +65,7 @@ removeTileFromRack tile (x:xs)
 
 -- Insert a tile into a rack
 insertTileIntoRack :: Tile -> Rack -> Rack
-insertTileIntoRack tile rack = rack ++ [tile]
+insertTileIntoRack tile rack = tile : rack
 
 -------------------------------------------------------------------------------
 -- | Tests --------------------------------------------------------------------

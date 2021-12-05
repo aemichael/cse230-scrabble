@@ -25,7 +25,9 @@ import Model.Tile as Tile
 -- Draw UI entrypoint
 -------------------------------------------------------------------------------
 drawUI :: Model.Scrabble -> [Widget String]
-drawUI scrabble = [ (drawBoard scrabble) <+> ((drawCurrentPlayer scrabble) <=> (drawPlayers scrabble)) ]
+drawUI scrabble = [ (drawBoard scrabble) <+> 
+                    ((drawCurrentPlayer scrabble) <=> (drawPlayers scrabble))
+                  ]
 
 -------------------------------------------------------------------------------
 -- Draw UI for Board
@@ -36,50 +38,51 @@ drawBoard scrabble =
   $ borderWithLabel (str "Scrabble")
   $ vTile [ mkRow scrabble row | row <- [1..Board.boardDim] ]
 
--- Creates a row in the board
+-- | Creates a row in the board
 mkRow :: Model.Scrabble -> Int -> Widget n
 mkRow s row = hTile [ mkCell s row i | i <- [1..Board.boardDim] ]
 
--- Creates vertical tiles
+-- | Creates vertical tiles
 vTile :: [Widget n] -> Widget n
 vTile (b:bs) = vBox (b : [hBorder <=> b | b <- bs])
 vTile _      = emptyWidget
 
--- Creates horizontal tiles
+-- | Creates horizontal tiles
 hTile :: [Widget n] -> Widget n
 hTile (b:bs) = hBox (b : [vBorder <+> b | b <- bs])
 hTile _      = emptyWidget
 
--- Creates a cell for each position in the board. For the current cell that the
--- cursor is in, render it specially.
+-- | Creates a cell for each position in the board. For the current cell that
+-- the cursor is in, render it specially.
 mkCell :: Model.Scrabble -> Int -> Int -> Widget n
 mkCell s r c 
   | Model.isCurr s r c = withCursor raw 
-  | otherwise    = raw 
+  | otherwise          = raw 
   where
     raw = mkCell' s r c
 
--- Render the cell with the cursor in it in a special ways
+-- | Render the cell with the cursor in it in a special ways
 withCursor :: Widget n -> Widget n
 withCursor = modifyDefAttr (`withStyle` reverseVideo)
 
--- Returns a cell with a widget corresponding to the tile at this position on
+-- | Returns a cell with a widget corresponding to the tile at this position on
 -- the board
 mkCell' :: Model.Scrabble -> Int -> Int -> Widget n
 mkCell' s r c = center (mkTile xoMb)
   where 
     xoMb      = Board.getTile (scrabbleBoard s) (BoardPos r c)
 
--- Converts a Tile to a widget
+
+-- | Converts a Tile to a widget
 mkTile :: Maybe Tile.Tile -> Widget n
 mkTile (Just (Tile.Letter char)) = blockLetter char
-mkTile Nothing  = blockBlank
+mkTile Nothing                   = blockBlank
 
--- Widget for blank tiles
+-- | Widget for blank tiles
 blockBlank :: Widget n
 blockBlank = vBox [ str " " ]
 
--- Widget for a tile with a letter
+-- | Widget for a tile with a letter
 blockLetter :: Char -> Widget n
 blockLetter char = vBox [ str [(toUpper char)] ]
 
@@ -98,7 +101,11 @@ drawPlayer scrabble playerKey =
   $ borderWithLabel (str playerName)
   $ padTopBottom 1
   $ vBox
-  $ map (uncurry drawInfo)[ ("Current Score", playerScore), ("Rack", playerRack), ("Played Rack", playerPlayedRack) ]
+  $ map (uncurry drawInfo)
+    [ ("Current Score", playerScore)
+    , ("Rack", playerRack)
+    , ("Played Rack", playerPlayedRack)
+    ]
   where
     player = getPlayer (scrabblePlayersMap scrabble) playerKey
     playerName = plName $ player

@@ -16,7 +16,7 @@ module Model.Player
 
     -- PlayerMap API
     , getPlayer
-    , updatePlayer
+    , putPlayer
     , printPlayerScores
 )
 where
@@ -60,18 +60,18 @@ getPlayerScore player = plScore (snd player)
 getPlayer :: PlayerMap -> Int -> Player
 getPlayer playerMap = (playerMap M.!)
 
-updatePlayer :: Int -> Player -> PlayerMap -> PlayerMap
-updatePlayer key player playerMap = M.insert key player playerMap
+putPlayer :: Int -> Player -> PlayerMap -> PlayerMap
+putPlayer key player playerMap = M.insert key player playerMap
 
--- Initialize the current player index
+-- | Initialize the current player index
 initCurrPlayerKey :: Int
 initCurrPlayerKey = 0
 
--- Initialize a map of players
+-- | Initialize a map of players
 initPlayersMap :: PlayerMap
 initPlayersMap = M.empty
 
--- Initialize a player
+-- | Initialize a player
 initPlayer :: Int -> Rack -> Player 
 initPlayer playerNum playerRack = MkPlayer 
     { plName = ("player " ++ show playerNum)

@@ -12,7 +12,6 @@ module Model.Score
 
     -- Score API
     , initScore
-    , getScore
     , updateScore
 )
 where
@@ -28,18 +27,13 @@ import Model.Tile
 -- | Score --------------------------------------------------
 -------------------------------------------------------------------------------
 
--- A score is an integer sum of all points from tiles.
+-- | A score is an integer sum of all points from tiles.
 type Score = Int
 
--- The initialize a Score
+-- | Initialize a Score
 initScore :: Score
 initScore = 0
 
--- Gets the score
-getScore :: Score -> Score
-getScore curr_score = curr_score
-
--- Updates the score
+-- | Updates the score
 updateScore :: [Tile] -> Score -> Score
-updateScore tiles currScore = (sum $ map getTileScore tiles) + currScore
-
+updateScore tiles score = (sum $ map getTileScore tiles) + score
