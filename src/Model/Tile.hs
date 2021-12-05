@@ -10,8 +10,7 @@ module Model.Tile
   Tile (..)
 
   -- Constants
-  , scores
-  , counts
+  , capitals
 
   -- Tile API
   , getTileScore
@@ -20,11 +19,78 @@ module Model.Tile
 where
 
 import qualified Data.Map.Strict as M
-import           Prelude 
+import Prelude 
+import Test.QuickCheck 
+
+-------------------------------------------------------------------------------
+-- | Tile --------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+-- A Tile is either Blank or has a Letter
+data Tile = Letter Char deriving (Eq)
+
+-- Define how to show an instance of a Tile
+instance Show Tile where
+  show (Letter x) = [x]
+
+-- Define how to order an instance of a Tile
+instance Ord Tile where
+  (<=) (Letter '*')      _          = True
+  (<=) _          (Letter '*')      = False
+  (<=) (Letter x) (Letter y) = (x <= y)
+
+-- Look up the score of a tile letter
+getTileScore :: Tile -> Int
+getTileScore = (scores M.!)
+
+-- Look up the count of a tile letter in the game
+getTileCount :: Tile -> Int
+getTileCount = (counts M.!)
+
+-------------------------------------------------------------------------------
+-- | Tile Tests --------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+genTile :: Gen Tile
+genTile = do
+  t <- elements $ Letter '*' : map Letter capitals
+  return t
+
+-- Generate a tile at the expected frequency in normal Scrabble play
+genTileAtFrequency :: Gen Tile
+genTileAtFrequency = do
+  t <- elements $ concat
+    [replicate (getTileCount x) x | x <- Letter '*' : map Letter capitals]
+  return t
+
+
+-- Simple sanity checks on getTileScore and getTileCount
+
+prop_tile_score :: Property
+prop_tile_score = forAll genTile $
+  \tile -> (getTileScore tile == scores M.! tile)
+
+-- >>> quickCheck prop_tile_score
+-- +++ OK, passed 100 tests.
+--
+
+prop_tile_count :: Property
+prop_tile_count = forAll genTile $
+  \tile -> (getTileCount tile == counts M.! tile)
+
+-- >>> quickCheck prop_tile_count
+-- +++ OK, passed 100 tests.
+--
+
 
 -------------------------------------------------------------------------------
 -- | Constants --------------------------------------------------------------------
--------------------------------------------------------------------------------
+----------------------------------------------------------------------------------
+
+-- Constant list of characters representing all capital letters
+capitals :: [Char]
+capitals = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q',
+           'R','S','T','U','V','W','X','Y','Z']
 
 -- Constant map of Tile to Int containing the score of each Tile in the game
 scores :: M.Map Tile Int
@@ -89,54 +155,3 @@ counts = M.fromList
   , (Letter 'Y', 2 )
   , (Letter 'Z', 1 )
   ]
-
--------------------------------------------------------------------------------
--- | Tile --------------------------------------------------------------------
--------------------------------------------------------------------------------
-
--- A Tile is either Blank or has a Letter
-data Tile = Letter Char deriving (Eq)
-
--- Define how to show an instance of a Tile
-instance Show Tile where
-  show (Letter x) = [x]
-
--- Define how to order an instance of a Tile
-instance Ord Tile where
-  (<=) (Letter '*')      _          = True
-  (<=) _          (Letter '*')      = False
-  (<=) (Letter x) (Letter y) = (x <= y)
-
--- Look up the score of a tile letter
-getTileScore :: Tile -> Int
-getTileScore tile = case M.lookup tile scores of 
-  -- If Found, return the score of this tile
-  Just count  -> count
-  -- If Not Found, this should never happen
-  Nothing -> error "This should not occur"
-
--- Look up the count of a tile letter in the game
-getTileCount :: Tile -> Int
-getTileCount tile = case M.lookup tile counts of 
-  -- If Found, return the count of this tile
-  Just count  -> count
-  -- If Not Found, this should never happen
-  Nothing -> error "This should not occur"
-
--------------------------------------------------------------------------------
--- | Tile Tests --------------------------------------------------------------------
--------------------------------------------------------------------------------
-
--- >>> prop_getTileScore 'A'
--- True
---
-
-prop_getTileScore :: Char -> Bool
-prop_getTileScore char = Just (getTileScore (Letter char)) == M.lookup (Letter char) scores
-
--- >>> prop_getTileCount 'A'
--- True
---
-
-prop_getTileCount :: Char -> Bool
-prop_getTileCount char = Just (getTileCount (Letter char)) == M.lookup (Letter char) counts

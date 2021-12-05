@@ -15,7 +15,8 @@ executable scrabble
                        random >=1.1 && <1.2,
                        containers,
                        vty, 
-                       brick
+                       brick,
+                       QuickCheck
   hs-source-dirs:      src
   other-modules:       SetupScrabble,
                        PlayScrabble,
