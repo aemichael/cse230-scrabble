@@ -119,18 +119,21 @@ deleteLetter s = do
   let rack = (plRack player)
   let playedRack = (plPlayedRack player)
   let board = (scrabbleBoard s)
-  let Just tile = getTile board (scrabblePos s)
-  -- Check if this tile has been played this turn
-  if (isTileInPlayedRack (tile, (scrabblePos s)) playedRack)
-  then do
-    let board' = deleteTile board (scrabblePos s)
-    let rack' = insertTileIntoRack tile rack
-    let playedRack' = removeTileFromPlayedRack (tile, (scrabblePos s)) playedRack
-    let player' = player { plRack = rack', plPlayedRack = playedRack' }
-    let playerMap' = updatePlayer (scrabbleCurrPlayerKey s) player' playerMap
-    return (board', playerMap', currPlayerKey, bag)
-  else do
-    return (Retry, playerMap, currPlayerKey, bag)
+  case getTile board (scrabblePos s) of
+    Just tile ->   
+      -- Check if this tile has been played this turn
+      if (isTileInPlayedRack (tile, (scrabblePos s)) playedRack)
+      then do
+        let board' = deleteTile board (scrabblePos s)
+        let rack' = insertTileIntoRack tile rack
+        let playedRack' = removeTileFromPlayedRack (tile, (scrabblePos s)) playedRack
+        let player' = player { plRack = rack', plPlayedRack = playedRack' }
+        let playerMap' = updatePlayer (scrabbleCurrPlayerKey s) player' playerMap
+        return (board', playerMap', currPlayerKey, bag)
+      else do
+        return (Retry, playerMap, currPlayerKey, bag)
+    Nothing -> return (Retry, playerMap, currPlayerKey, bag)
+
   
 -- Places a letter on the board
 playLetter :: Tile -> Scrabble -> IO (Result Board, PlayerMap, Int, Bag)
