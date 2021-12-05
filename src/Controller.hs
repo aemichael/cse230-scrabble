@@ -48,7 +48,7 @@ startup playerCount s = do
   -- Create the map of players
   (playerMap', bag') <- liftIO (createPlayers bag (take playerCount [0..]) )
   -- Return the new game state with the player map and the new bag
-  return (s { scrabblePlayersMap = playerMap', scrabbleBag = bag'});
+  return (s { scrabbleNumPlayers = playerCount, scrabblePlayersMap = playerMap', scrabbleBag = bag'});
 
 -- Main control function that is used to handle events once they occur
 control :: Scrabble -> BrickEvent n Tick -> EventM n (Next Scrabble)

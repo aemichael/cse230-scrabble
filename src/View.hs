@@ -25,7 +25,7 @@ import Model.Tile as Tile
 -- Draw UI entrypoint
 -------------------------------------------------------------------------------
 drawUI :: Model.Scrabble -> [Widget String]
-drawUI scrabble = [ (drawBoard scrabble) <+> ((drawPlayer scrabble) <=> (drawBag scrabble)) ]
+drawUI scrabble = [ (drawBoard scrabble) <+> ((drawPlayers scrabble) <=> (drawBag scrabble)) ]
 
 -------------------------------------------------------------------------------
 -- Draw UI for Board
@@ -86,15 +86,21 @@ blockLetter char = vBox [ str [(toUpper char)] ]
 -------------------------------------------------------------------------------
 -- Draw UI for Player
 -------------------------------------------------------------------------------
-drawPlayer :: Model.Scrabble -> Widget String
-drawPlayer scrabble = 
+drawPlayers :: Model.Scrabble -> Widget String
+drawPlayers scrabble = vBox (map (drawPlayer scrabble) playerKeysList)
+  where
+    playerCount = scrabbleNumPlayers scrabble
+    playerKeysList = take playerCount [0..]
+
+drawPlayer :: Model.Scrabble -> Int -> Widget String
+drawPlayer scrabble playerKey = 
   withBorderStyle unicode
   $ borderWithLabel (str playerName)
   $ padTopBottom 1
   $ vBox
   $ map (uncurry drawInfo)[ ("Current Score", playerScore), ("Rack", playerRack), ("Played Rack", playerPlayedRack) ]
   where
-    player = getPlayer (scrabblePlayersMap scrabble) (scrabbleCurrPlayerKey scrabble)
+    player = getPlayer (scrabblePlayersMap scrabble) playerKey
     playerName = plName $ player
     playerScore = show $ plScore $ player
     playerRack = show $ plRack $ player

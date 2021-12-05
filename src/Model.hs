@@ -22,8 +22,9 @@ data Tick = Tick
 
 -- A Scrabble has a currentPlayer, map of all players, board, current cursor, bag, and result.
 data Scrabble = MkScrabble
-  { scrabbleCurrPlayerKey :: Int                  -- ^ current player index
-  , scrabblePlayersMap :: Player.PlayerMap -- ^ current players map
+  { scrabbleNumPlayers :: Int                     -- ^ number of players
+  , scrabbleCurrPlayerKey :: Int                  -- ^ current player index
+  , scrabblePlayersMap :: Player.PlayerMap        -- ^ current players map
   , scrabbleBoard  :: Board.Board                 -- ^ current board
   , scrabblePos    :: Board.BoardPos              -- ^ current cursor
   , scrabbleBag    :: Bag.Bag                     -- ^ current bag
@@ -32,7 +33,8 @@ data Scrabble = MkScrabble
 -- Initialize the Scrabble game state
 initScrabble :: Scrabble
 initScrabble = MkScrabble 
-  { scrabbleCurrPlayerKey = Player.initCurrPlayerKey
+  { scrabbleNumPlayers = 0
+  , scrabbleCurrPlayerKey = Player.initCurrPlayerKey
   , scrabblePlayersMap = Player.initPlayersMap
   , scrabbleBoard  = Board.initBoard
   , scrabblePos    = head Board.boardPositions
