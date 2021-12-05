@@ -17,8 +17,8 @@ Define how we will implement this over the network
 ### Interface Notes
 - use arrow keys to move around the board
 - type a letter/* to place a letter on the board. if you have that letter, it's highlighted on your rack; if you don't, nothing happens
-- hit <delete> to remove a letter; only works if placed that turn, in which case the letter is de-highlighted on  your rack
-- hit <enter> to end the turn ==> score is updated & rack refilled from bag
+- hit `delete` to remove a letter; only works if placed that turn, in which case the letter is de-highlighted on  your rack
+- hit `enter` to end the turn ==> score is updated & rack refilled from bag
 - game ends when the rack is empty at the end of a turn, after attempting to refill
 - cells = 6x6. letters = 5x5, ex:
 
