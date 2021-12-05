@@ -37,6 +37,12 @@ our new set of minimum goals.
 - [x] Support a single player playing one round of Scrabble against "themselves", which ends
   when the bag is empty
 
+## Fixes:
+- [ ] Game ends only when at least one player has an empty rack, *and* the bag is empty
+- [ ] Score calculation takes adjacent words/letters into consideration, even if not played
+  on that turn
+- [ ] End-of-game scores subtract the score of any tiles remaining on each player's rack
+
 ### Stretch Goals:
 - [ ] Track which tiles provide bonuses and update players' scores accordingly
 - [x] Support 2 players playing Scrabble locally on the same instance of the program
