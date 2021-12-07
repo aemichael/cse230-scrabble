@@ -14,14 +14,14 @@ import           Model.Bag
 import           Model.Board
 import           Model.PlayedRack
 import           Model.Player
-import           Model.Rack
+import qualified Model.Rack as Rack
 import           Model.Score
 import           Model.Tile
 
 createPlayer :: Int -> Bag -> IO (Player, Bag)
 createPlayer playerNum bag = do
   -- Create a new rack for this player
-  (bag', rack') <- fillRack initRack bag
+  (bag', rack') <- Rack.fillRack Rack.initRack bag
   -- Create the player
   let player = initPlayer playerNum rack'
   -- Return the newly created player and new bag
@@ -125,7 +125,7 @@ deleteLetter s = do
       if isTileInPlayedRack (tile, (scrabblePos s)) playedRack
         then do
           let board'      = deleteTile board (scrabblePos s)
-          let rack'       = insertTileIntoRack tile rack
+          let rack'       = Rack.insert tile rack
           let playedRack' = removeTileFromPlayedRack (tile, (scrabblePos s)) playedRack
           let player'     = player { plRack = rack', plPlayedRack = playedRack' }
           let playerMap'  = putPlayer (scrabbleCurrPlayerKey s) player' playerMap
@@ -145,11 +145,11 @@ playLetter tile s = do
   let rack       = (plRack player)
   let playedRack = (plPlayedRack player)
   -- Check if this letter is in the player's rack
-  if isTileInRack tile rack
+  if Rack.contains tile rack
   -- If yes, then insert it and remove it from the rack and insert into played rack
     then do
       let res         = putTile (scrabbleBoard s) tile (scrabblePos s)
-      let rack'       = removeTileFromRack tile rack
+      let rack'       = Rack.remove tile rack
       let playedRack' = insertTileIntoPlayedRack (tile, (scrabblePos s)) playedRack
       let player'     = player { plRack = rack', plPlayedRack = playedRack' }
       let playerMap'  = putPlayer (scrabbleCurrPlayerKey s) player' playerMap
@@ -178,7 +178,7 @@ endTurn s = do
   -- a board position the four directions for the tiles it is connected to.
   let newScore      = updateScore (extractTiles playedRack) currScore
   -- Refill Rack
-  (bag', rack')    <- fillRack rack bag
+  (bag', rack')    <- Rack.fillRack rack bag
   -- Clear playedRack
   -- NOTE: This is where the new score is actually updated for the player
   let player'       = player { plRack = rack', plPlayedRack = initPlayedRack, plScore = newScore }

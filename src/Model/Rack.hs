@@ -15,9 +15,9 @@ module Model.Rack
     -- Rack API
     , initRack
     , fillRack
-    , isTileInRack
-    , removeTileFromRack
-    , insertTileIntoRack
+    , contains
+    , remove
+    , insert
 
     -- Tests
     , prop_rack_refill_size
@@ -53,19 +53,19 @@ fillRack rack bag = do
   return (bag', rack ++ rack')
 
 -- Check if a tile is in a rack
-isTileInRack :: Tile -> Rack -> Bool
-isTileInRack tile rack = elem tile rack
+contains :: Tile -> Rack -> Bool
+contains = elem
 
 -- Removes the first occurrence of a tile from a rack.
-removeTileFromRack :: Tile -> Rack -> Rack
-removeTileFromRack _ [] = []
-removeTileFromRack tile (x:xs)
+remove :: Tile -> Rack -> Rack
+remove _ [] = []
+remove tile (x:xs)
   | x == tile = xs
-  | otherwise = x : removeTileFromRack tile xs
+  | otherwise = x : remove tile xs
 
 -- Insert a tile into a rack
-insertTileIntoRack :: Tile -> Rack -> Rack
-insertTileIntoRack tile rack = tile : rack
+insert :: Tile -> Rack -> Rack
+insert tile rack = tile : rack
 
 -------------------------------------------------------------------------------
 -- | Tests --------------------------------------------------------------------
