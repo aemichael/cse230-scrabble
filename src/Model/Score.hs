@@ -42,9 +42,9 @@ updateScore :: PlayedRack -> Board -> Score -> Score
 updateScore pr b sc = sc + calcNewScore pr b
 
 calcNewScore :: PlayedRack -> Board -> Score
-calcNewScore pr b = sum $ S.map getTileScore scoredTiles
+calcNewScore pr b = sum $ map getTileScore scoredTiles
   where
-    scoredTiles = S.map (getTileUnsafe b) $ calcScoredPositions pr b
+    scoredTiles = map (getTileUnsafe b) $ S.toList (calcScoredPositions pr b)
 
 -- | Calculate the positions that should be scored for the given played rack.
 -- This includes all played positions, and any adjacent positions that are

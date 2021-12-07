@@ -60,7 +60,7 @@ data BoardPos = BoardPos
   { pRow :: Int
   , pCol :: Int
   }
-  deriving (Eq, Ord)
+  deriving (Eq, Ord, Show)
 
 -- | A Result is the definition of if a put succeed or fails on the board
 data Result a 
@@ -81,8 +81,8 @@ isOccupied b pos = Maybe.isJust $ getTile b pos
 getTile :: Board -> BoardPos -> Maybe Tile 
 getTile board pos = M.lookup pos board
 
--- | Get the tile on the board at this position. Throws an error if there is no
--- tile there.
+-- | Get the tile on the board at this position. Throws an error if the position
+-- is unoccupied.
 getTileUnsafe :: Board -> BoardPos -> Tile
 getTileUnsafe board pos = board M.! pos
 
@@ -116,8 +116,9 @@ getAllOccPositions b pos = S.unions
 -- the current position
 getUpOccPositions :: Board -> BoardPos -> S.Set BoardPos
 getUpOccPositions b pos@(BoardPos r c)
-  | r == 0 || not (isOccupied b pos) = S.empty
-  | otherwise = S.union (S.singleton pos) (getUpOccPositions b upPos)
+  | not (isOccupied b pos) = S.empty
+  | r == 0                 = S.singleton pos
+  | otherwise              = S.union (S.singleton pos) (getUpOccPositions b upPos)
   where
     upPos = BoardPos (r - 1) c
 
@@ -125,8 +126,9 @@ getUpOccPositions b pos@(BoardPos r c)
 -- the current position
 getDownOccPositions :: Board -> BoardPos -> S.Set BoardPos
 getDownOccPositions b pos@(BoardPos r c)
-  | r == boardDim - 1 || not (isOccupied b pos) = S.empty
-  | otherwise = S.union (S.singleton pos) (getDownOccPositions b downPos)
+  | not (isOccupied b pos) = S.empty
+  | r == boardDim - 1      = S.singleton pos
+  | otherwise              = S.union (S.singleton pos) (getDownOccPositions b downPos)
   where
     downPos = BoardPos (r + 1) c
 
@@ -134,8 +136,9 @@ getDownOccPositions b pos@(BoardPos r c)
 -- the current position
 getLeftOccPositions :: Board -> BoardPos -> S.Set BoardPos
 getLeftOccPositions b pos@(BoardPos r c)
-  | c == 0  || not (isOccupied b pos) = S.empty
-  | otherwise = S.union (S.singleton pos) (getLeftOccPositions b leftPos)
+  | not (isOccupied b pos) = S.empty
+  | c == 0                 = S.singleton pos
+  | otherwise              = S.union (S.singleton pos) (getLeftOccPositions b leftPos)
   where
     leftPos = BoardPos r (c - 1)
 
@@ -143,7 +146,8 @@ getLeftOccPositions b pos@(BoardPos r c)
 -- the current position
 getRightOccPositions :: Board -> BoardPos -> S.Set BoardPos
 getRightOccPositions b pos@(BoardPos r c)
-  | c == boardDim - 1 || not (isOccupied b pos) = S.empty
-  | otherwise = S.union (S.singleton pos) (getRightOccPositions b rightPos)
+  | not (isOccupied b pos) = S.empty
+  | c == boardDim - 1      = S.singleton pos
+  | otherwise              = S.union (S.singleton pos) (getRightOccPositions b rightPos)
   where
     rightPos = BoardPos r (c + 1)
