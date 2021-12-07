@@ -185,8 +185,8 @@ endTurn s = do
   let playerMap'    = putPlayer (scrabbleCurrPlayerKey s) player' playerMap
   -- Get the next player's key
   let nextPlayerKey = getNextPlayerKey s
-  -- If the bag is empty, end the game
-  if isBagEmpty bag
+  -- If the bag is empty and the player has used all their tiles, end the game
+  if isBagEmpty bag && isRackEmpty rack'
     then return (End board, playerMap', nextPlayerKey, bag')
     else return (Cont board, playerMap', nextPlayerKey, bag')
 

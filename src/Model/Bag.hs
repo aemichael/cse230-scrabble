@@ -16,6 +16,7 @@ module Model.Bag
     
     -- Bag API
     , initBag
+    , initTestBag
     , drawN
     , draw1
     , isBagEmpty
@@ -38,6 +39,10 @@ initBag :: Bag
 initBag = concat [ 
     replicate (getTileCount x) x | x <- Letter '*' : map Letter capitals 
   ]
+
+-- | Initialize a smaller bag used for testing
+initTestBag :: Bag
+initTestBag = Letter '*' : map Letter capitals 
 
 -- | Draw N random tiles from the bag
 drawN :: Int -> Bag -> IO (Bag, [Tile])

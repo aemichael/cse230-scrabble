@@ -38,7 +38,7 @@ our new set of minimum goals.
   when the bag is empty
 
 ### Fixes:
-- [ ] Game ends only when at least one player has an empty rack, *and* the bag is empty
+- [x] Game ends only when at least one player has an empty rack, *and* the bag is empty
 - [ ] Score calculation takes adjacent words/letters into consideration, even if not played
   on that turn
 - [ ] End-of-game scores subtract the score of any tiles remaining on each player's rack

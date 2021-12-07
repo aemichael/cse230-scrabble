@@ -38,7 +38,7 @@ initScrabble = MkScrabble
   , scrabblePlayersMap    = Player.initPlayersMap
   , scrabbleBoard         = Board.initBoard
   , scrabblePos           = head Board.boardPositions
-  , scrabbleBag           = Bag.initBag
+  , scrabbleBag           = if isTest then Bag.initTestBag else Bag.initBag
   }
 
 -- | Gets the next player key
@@ -72,3 +72,11 @@ next s (Board.End b') p' k' bag'  = Left $ s
   , scrabbleCurrPlayerKey = k'
   , scrabbleBag = bag'
   }
+
+--------------------------------------------------------------------------------
+-- Testing -------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
+-- | Turn this on to use testing values (e.g. a smaller initial bag)
+isTest :: Bool
+isTest = True
