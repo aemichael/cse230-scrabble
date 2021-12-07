@@ -59,8 +59,8 @@ hTile _      = emptyWidget
 -- the cursor is in, render it specially.
 mkCell :: Model.Scrabble -> Int -> Int -> Widget n
 mkCell s r c 
-  | Model.isCurr s r c = withCursor raw 
-  | otherwise          = raw 
+  | Model.isCurrentPos s (r,c) = withCursor raw 
+  | otherwise                  = raw 
   where
     raw = mkCell' s r c
 

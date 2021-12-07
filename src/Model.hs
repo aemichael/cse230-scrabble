@@ -52,8 +52,8 @@ getNextPlayerKey scrabble =
     numPlayers = (scrabbleNumPlayers scrabble)
 
 -- | Checks if the coordinate (r,c) the same as the current position of the board
-isCurr :: Scrabble -> Int -> Int -> Bool
-isCurr s r c = (Board.pRow p == r) && (Board.pCol p == c)
+isCurrentPos :: Scrabble -> (Int, Int) -> Bool
+isCurrentPos s (r,c) = (Board.pRow p == r) && (Board.pCol p == c)
   where 
     p = scrabblePos s 
 
