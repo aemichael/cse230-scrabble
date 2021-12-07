@@ -44,11 +44,14 @@ updateScore pr b sc = sc + calcNewScore pr b
 calcNewScore :: PlayedRack -> Board -> Score
 calcNewScore pr b = sum $ map getTileScore scoredTiles
   where
-    scoredTiles = map (getTileUnsafe b) $ S.toList (calcScoredPositions pr b)
+    scoredTiles = map (getTileUnsafe b) $ calcScoredPositions pr b
 
 -- | Calculate the positions that should be scored for the given played rack.
 -- This includes all played positions, and any adjacent positions that are
--- occupied with a tile. Example: If the current board is
+-- occupied with a tile (\"neighbors\"). When a played tile has neighbors,
+-- that tile is counted twice.
+-- 
+-- Example: If the current board is
 -- ```
 --      |   | A | N | D |
 --      |---|---|---|---|
@@ -70,7 +73,20 @@ calcNewScore pr b = sum $ map getTileScore scoredTiles
 -- ```
 -- Then their score includes the three tiles they played, *and also* the tiles
 -- `N` (first letter of `NEED`); `E` (second of `EE`); and `X` (second of `EX`).
-calcScoredPositions :: PlayedRack -> Board -> S.Set BoardPos
-calcScoredPositions []          _ = S.empty
-calcScoredPositions ((_,p):tps) b = S.union (getAllOccPositions b p)
-                                            (calcScoredPositions tps b)
+-- In addition, the tiles `E`, `E` played on this turn are each counted twice
+-- (once in each direction). You can think of this as scoring up each \"word\"
+-- formed by this play: `NEED`, `EE`, and `EX`. So the final score is
+-- (1 + 1 + 1 + 2) + (1 + 1) + (1 + 9) = 16.
+calcScoredPositions :: PlayedRack -> Board -> [BoardPos]
+calcScoredPositions pr b = playedPos ++ (S.toList $ scoredPosSet playedPos b)
+  where
+    playedPos = map snd pr
+
+    scoredPosSet :: [BoardPos] -> Board -> S.Set BoardPos
+    scoredPosSet []     _ = S.empty
+    scoredPosSet (p:ps) b = S.union (getUnplayedNeighbors b p) (scoredPosSet ps b)
+
+    -- Unplayed neighbors = (all neighbors) - (played positions - current pos)
+    getUnplayedNeighbors :: Board -> BoardPos -> S.Set BoardPos
+    getUnplayedNeighbors b p = S.difference (getAllNeighbors b p) $
+                                 S.difference (S.fromList playedPos) (S.fromList [p])

@@ -26,7 +26,7 @@ module Model.Board
   , getTileUnsafe
   , putTile
   , deleteTile
-  , getAllOccPositions
+  , getAllNeighbors
 )
   where
 
@@ -102,52 +102,63 @@ deleteTile board boardpos = Cont (M.delete boardpos board)
 -- These functions used to calculate complex scores, acccounting for contiguous tiles
 -- in cardinal directions from the current play
 
--- | Get all continguous occupied positions in cardinal directions from this pos,
--- including the current position
-getAllOccPositions :: Board -> BoardPos -> S.Set BoardPos
-getAllOccPositions b pos = S.unions
-                            [ getUpOccPositions    b pos
-                            , getDownOccPositions  b pos
-                            , getLeftOccPositions  b pos
-                            , getRightOccPositions b pos
-                            ]
+-- | Get all contiguous occupied positions (\"neighbors\") in cardinal directions
+-- from this pos.
+-- 
+-- By default, we exclude the current position. However, to support double-counting of
+-- tiles when they are used to play in both directions (up-down and left-right),
+-- we count the current position as its own neighbor whenever it has neighbors in
+-- *both* the up-down and left-right directions.
+getAllNeighbors :: Board -> BoardPos -> S.Set BoardPos
+getAllNeighbors b pos@(BoardPos r c)
+  | hasUDNeighbors && hasLRNeighbors
+              = S.unions [S.singleton pos, upN, downN, leftN, rightN]
+  | otherwise = S.unions [upN, downN, leftN, rightN]
+  where
+    upN = getUpNeighbors b $ BoardPos (r-1) c
+    downN = getDownNeighbors b $ BoardPos (r+1) c
+    leftN = getLeftNeighbors b $ BoardPos r (c-1)
+    rightN = getRightNeighbors b $ BoardPos r (c+1)
+
+    hasUDNeighbors = (S.size upN + S.size downN) > 0
+    hasLRNeighbors = (S.size leftN + S.size rightN) > 0
 
 -- | Get contiguous occupied positions directly up from this pos, including
 -- the current position
-getUpOccPositions :: Board -> BoardPos -> S.Set BoardPos
-getUpOccPositions b pos@(BoardPos r c)
-  | not (isOccupied b pos) = S.empty
-  | r == 0                 = S.singleton pos
-  | otherwise              = S.union (S.singleton pos) (getUpOccPositions b upPos)
+getUpNeighbors :: Board -> BoardPos -> S.Set BoardPos
+getUpNeighbors b pos@(BoardPos r c)
+  | r < 0 || not (isOccupied b pos) = S.empty
+  | otherwise = S.union sPos (getUpNeighbors b upPos)
   where
+    sPos = S.singleton pos
     upPos = BoardPos (r - 1) c
 
 -- | Get contiguous occupied positions directly down from this pos, including
 -- the current position
-getDownOccPositions :: Board -> BoardPos -> S.Set BoardPos
-getDownOccPositions b pos@(BoardPos r c)
-  | not (isOccupied b pos) = S.empty
-  | r == boardDim - 1      = S.singleton pos
-  | otherwise              = S.union (S.singleton pos) (getDownOccPositions b downPos)
+getDownNeighbors :: Board -> BoardPos -> S.Set BoardPos
+getDownNeighbors b pos@(BoardPos r c)
+  | r == boardDim || not (isOccupied b pos) = S.empty
+  | otherwise = S.union sPos (getDownNeighbors b downPos)
   where
+    sPos = S.singleton pos
     downPos = BoardPos (r + 1) c
 
 -- | Get contiguous occupied positions directly left of this pos, including
 -- the current position
-getLeftOccPositions :: Board -> BoardPos -> S.Set BoardPos
-getLeftOccPositions b pos@(BoardPos r c)
-  | not (isOccupied b pos) = S.empty
-  | c == 0                 = S.singleton pos
-  | otherwise              = S.union (S.singleton pos) (getLeftOccPositions b leftPos)
+getLeftNeighbors :: Board -> BoardPos -> S.Set BoardPos
+getLeftNeighbors b pos@(BoardPos r c)
+  | c < 0 || not (isOccupied b pos) = S.empty
+  | otherwise = S.union sPos (getLeftNeighbors b leftPos)
   where
+    sPos = S.singleton pos
     leftPos = BoardPos r (c - 1)
 
 -- | Get contiguous occupied positions directly right of this pos, including
 -- the current position
-getRightOccPositions :: Board -> BoardPos -> S.Set BoardPos
-getRightOccPositions b pos@(BoardPos r c)
-  | not (isOccupied b pos) = S.empty
-  | c == boardDim - 1      = S.singleton pos
-  | otherwise              = S.union (S.singleton pos) (getRightOccPositions b rightPos)
+getRightNeighbors :: Board -> BoardPos -> S.Set BoardPos
+getRightNeighbors b pos@(BoardPos r c)
+  | c == boardDim || not (isOccupied b pos) = S.empty
+  | otherwise = S.union sPos (getRightNeighbors b rightPos)
   where
+    sPos = S.singleton pos
     rightPos = BoardPos r (c + 1)
