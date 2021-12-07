@@ -7,17 +7,20 @@
 -------------------------------------------------------------------------------
 module Model.Score
 ( 
-    -- Types
-    Score
+  -- Types
+  Score
 
-    -- Score API
-    , initScore
-    , updateScore
+  -- Score API
+  , initScore
+  , updateScore
 )
 where
 
 import Prelude
 import Model.Tile
+import Model.PlayedRack
+import Model.Board
+import qualified Data.Set as S
 
 -------------------------------------------------------------------------------
 -- | Constants --------------------------------------------------------------------
@@ -34,6 +37,40 @@ type Score = Int
 initScore :: Score
 initScore = 0
 
--- | Updates the score
-updateScore :: [Tile] -> Score -> Score
-updateScore tiles score = (sum $ map getTileScore tiles) + score
+-- | Gets the score
+updateScore :: PlayedRack -> Board -> Score -> Score
+updateScore pr b sc = sc + calcNewScore pr b
+
+calcNewScore :: PlayedRack -> Board -> Score
+calcNewScore pr b = sum $ S.map getTileScore scoredTiles
+  where
+    scoredTiles = S.map (getTileUnsafe b) $ calcScoredPositions pr b
+
+-- | Calculate the positions that should be scored for the given played rack.
+-- This includes all played positions, and any adjacent positions that are
+-- occupied with a tile. Example: If the current board is
+-- ```
+--      |   | A | N | D |
+--      |---|---|---|---|
+--      |   |   |   | E |
+--      |---|---|---|---|
+--      |   |   |   | X |
+--      |---|---|---|---|
+--      |   |   |   |   |
+-- ```
+-- And the player plays `E`, `E`, `D` as so:
+-- ```
+--      |   | A | N | D |
+--      |---|---|---|---|
+--      |   |   | E | E |
+--      |---|---|---|---|
+--      |   |   | E | X |
+--      |---|---|---|---|
+--      |   |   | D |   |
+-- ```
+-- Then their score includes the three tiles they played, *and also* the tiles
+-- `N` (first letter of `NEED`); `E` (second of `EE`); and `X` (second of `EX`).
+calcScoredPositions :: PlayedRack -> Board -> S.Set BoardPos
+calcScoredPositions []          _ = S.empty
+calcScoredPositions ((_,p):tps) b = S.union (getAllOccPositions b p)
+                                            (calcScoredPositions tps b)
