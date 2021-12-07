@@ -76,7 +76,7 @@ calcNewScore pr b = sum $ map getTileScore scoredTiles
 -- In addition, the tiles `E`, `E` played on this turn are each counted twice
 -- (once in each direction). You can think of this as scoring up each \"word\"
 -- formed by this play: `NEED`, `EE`, and `EX`. So the final score is
--- (1 + 1 + 1 + 2) + (1 + 1) + (1 + 9) = 16.
+-- (1 + 1 + 1 + 2) + (1 + 1) + (1 + 8) = 16.
 calcScoredPositions :: PlayedRack -> Board -> [BoardPos]
 calcScoredPositions pr b = playedPos ++ (S.toList $ scoredPosSet playedPos b)
   where
