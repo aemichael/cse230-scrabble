@@ -13,6 +13,7 @@ module Model.Player
     , initPlayer
     , initPlayersMap
     , initCurrPlayerKey
+    , finalizePlayerScore
 
     -- PlayerMap API
     , getPlayer
@@ -21,10 +22,11 @@ module Model.Player
 )
 where
 
-import qualified Data.Map as M
+import qualified Data.Map.Strict as M
 import           Model.PlayedRack
 import           Model.Rack
 import           Model.Score
+import           Model.Tile
 
 -- A player has a name.
 data Player = MkPlayer 
@@ -56,6 +58,13 @@ getPlayerName player = plName (snd player)
 
 getPlayerScore :: (Int, Player) -> Score
 getPlayerScore player = plScore (snd player)
+
+-- | Calculate the final score for a player at the end of the game. Subtracts
+-- the score of any tiles left in the player's rack from their final score.
+finalizePlayerScore :: Player -> Player
+finalizePlayerScore (MkPlayer name rack pr sc) = MkPlayer name [] pr sc'
+  where
+    sc' = sc - (sum $ map getTileScore rack)
 
 getPlayer :: PlayerMap -> Int -> Player
 getPlayer playerMap = (playerMap M.!)

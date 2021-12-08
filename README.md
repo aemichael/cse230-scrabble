@@ -39,9 +39,9 @@ our new set of minimum goals.
 
 ### Fixes:
 - [x] Game ends only when at least one player has an empty rack, *and* the bag is empty
-- [ ] Score calculation takes adjacent words/letters into consideration, even if not played
+- [x] Score calculation takes adjacent words/letters into consideration, even if not played
   on that turn
-- [ ] End-of-game scores subtract the score of any tiles remaining on each player's rack
+- [x] End-of-game scores subtract the score of any tiles remaining on each player's rack
 - [ ] Allow players to place tiles with capital letters and space (for blank tiles)
 
 ### Stretch Goals:

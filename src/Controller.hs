@@ -7,7 +7,7 @@ import           Brick hiding (Result)
 import qualified Brick.Types as T
 import           Control.Monad.IO.Class (MonadIO(liftIO))
 
-import qualified Data.Map as M
+import qualified Data.Map.Strict as M
 import qualified Graphics.Vty as V
 import           Model
 import           Model.Bag
@@ -176,7 +176,7 @@ endTurn s = do
   -- PlayedRack is a [(Tile, BoardPos)] so the board pos info can be used
   -- to compute which tiles are on bonus board positions and also search fromEnum
   -- a board position the four directions for the tiles it is connected to.
-  let newScore      = updateScore (extractTiles playedRack) currScore
+  let newScore      = updateScore playedRack board currScore
   -- Refill Rack
   (bag', rack')    <- fillRack rack bag
   -- Clear playedRack
@@ -187,7 +187,7 @@ endTurn s = do
   let nextPlayerKey = getNextPlayerKey s
   -- If the bag is empty and the player has used all their tiles, end the game
   if isBagEmpty bag && isRackEmpty rack'
-    then return (End board, playerMap', nextPlayerKey, bag')
+    then return (End board, M.map finalizePlayerScore playerMap', nextPlayerKey, bag')
     else return (Cont board, playerMap', nextPlayerKey, bag')
 
 -- | Updates the result of the game
