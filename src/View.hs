@@ -26,7 +26,8 @@ import Model.Tile as Tile
 -------------------------------------------------------------------------------
 drawUI :: Model.Scrabble -> [Widget String]
 drawUI scrabble = [ (drawBoard scrabble) <+> 
-                    ( (drawBag scrabble) <=>
+                    -- ( (drawBag scrabble) <=>
+                    ( 
                       (drawCurrentPlayer scrabble) <=>
                       (drawPlayers scrabble)
                     )
@@ -92,11 +93,16 @@ blockLetter char = vBox [ str [(toUpper char)] ]
 -------------------------------------------------------------------------------
 -- | Draw UI for Player
 -------------------------------------------------------------------------------
+
+removeItem _ []                 = []
+removeItem x (y:ys) | x == y    = removeItem x ys
+                    | otherwise = y : removeItem x ys
+
 drawPlayers :: Model.Scrabble -> Widget String
 drawPlayers scrabble = vBox (map (drawPlayer scrabble) playerKeysList)
   where
     playerCount = scrabbleNumPlayers scrabble
-    playerKeysList = take playerCount [0..]
+    playerKeysList = removeItem (scrabbleCurrPlayerKey scrabble) (take playerCount [0..])
 
 drawPlayer :: Model.Scrabble -> Int -> Widget String
 drawPlayer scrabble playerKey = 
@@ -106,15 +112,11 @@ drawPlayer scrabble playerKey =
   $ vBox
   $ map (uncurry drawInfo)
     [ ("Current Score", playerScore)
-    , ("Rack", playerRack)
-    , ("Played Rack", playerPlayedRack)
     ]
   where
     player = getPlayer (scrabblePlayersMap scrabble) playerKey
     playerName = plName $ player
     playerScore = show $ plScore $ player
-    playerRack = show $ plRack $ player
-    playerPlayedRack = show $ PlayedRack.extractTiles $ plPlayedRack $ player
 
 drawInfo :: String -> String -> Widget String
 drawInfo action keys =
@@ -127,23 +129,31 @@ drawInfo action keys =
 drawCurrentPlayer :: Model.Scrabble -> Widget String
 drawCurrentPlayer scrabble = 
   withBorderStyle unicode
-  $ borderWithLabel (str "Current Player")
+  $ borderWithLabel (str ("Current Player: " ++ playerName))
   $ padTopBottom 1
   $ vBox
-  $ map (uncurry drawInfo)[ ("Current Player", playerName) ]
+  $ map (uncurry drawInfo)
+    [ ("Current Player", playerName)
+    , ("Current Score", playerScore)
+    , ("Rack", playerRack)
+    , ("Played Rack", playerPlayedRack)
+    ]
   where
     player = getPlayer (scrabblePlayersMap scrabble) (scrabbleCurrPlayerKey scrabble)
     playerName = plName $ player
+    playerScore = show $ plScore $ player
+    playerRack = show $ plRack $ player
+    playerPlayedRack = show $ PlayedRack.extractTiles $ plPlayedRack $ player
 
 -------------------------------------------------------------------------------
 -- | Draw UI for Bag
 -------------------------------------------------------------------------------
-drawBag :: Model.Scrabble -> Widget String
-drawBag scrabble = 
-  withBorderStyle unicode
-  $ borderWithLabel (str "Bag")
-  $ padTopBottom 1
-  $ vBox
-  $ map (uncurry drawInfo)[ ("Num Tiles Left", numTilesLeft) ]
-  where
-    numTilesLeft = show $ length $ scrabbleBag scrabble
+-- drawBag :: Model.Scrabble -> Widget String
+-- drawBag scrabble = 
+--   withBorderStyle unicode
+--   $ borderWithLabel (str "Bag")
+--   $ padTopBottom 1
+--   $ vBox
+--   $ map (uncurry drawInfo)[ ("Num Tiles Left", numTilesLeft) ]
+--   where
+--     numTilesLeft = show $ length $ scrabbleBag scrabble
