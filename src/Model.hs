@@ -79,4 +79,4 @@ next s (Board.End b') p' k' bag'  = Left $ s
 
 -- | Turn this on to use testing values (e.g. a smaller initial bag)
 isTest :: Bool
-isTest = True
+isTest = False
