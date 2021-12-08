@@ -26,8 +26,7 @@ import Model.Tile as Tile
 -------------------------------------------------------------------------------
 drawUI :: Model.Scrabble -> [Widget String]
 drawUI scrabble = [ (drawBoard scrabble) <+> 
-                    -- ( (drawBag scrabble) <=>
-                    ( 
+                    ( (drawBag scrabble) <=>
                       (drawCurrentPlayer scrabble) <=>
                       (drawPlayers scrabble)
                     )
@@ -148,12 +147,12 @@ drawCurrentPlayer scrabble =
 -------------------------------------------------------------------------------
 -- | Draw UI for Bag
 -------------------------------------------------------------------------------
--- drawBag :: Model.Scrabble -> Widget String
--- drawBag scrabble = 
---   withBorderStyle unicode
---   $ borderWithLabel (str "Bag")
---   $ padTopBottom 1
---   $ vBox
---   $ map (uncurry drawInfo)[ ("Num Tiles Left", numTilesLeft) ]
---   where
---     numTilesLeft = show $ length $ scrabbleBag scrabble
+drawBag :: Model.Scrabble -> Widget String
+drawBag scrabble = 
+  withBorderStyle unicode
+  $ borderWithLabel (str "Bag")
+  $ padTopBottom 1
+  $ vBox
+  $ map (uncurry drawInfo)[ ("Num Tiles Left", numTilesLeft) ]
+  where
+    numTilesLeft = show $ length $ scrabbleBag scrabble
