@@ -42,7 +42,7 @@ our new set of minimum goals.
 - [x] Score calculation takes adjacent words/letters into consideration, even if not played
   on that turn
 - [x] End-of-game scores subtract the score of any tiles remaining on each player's rack
-- [ ] Allow players to place tiles with capital letters and space (for blank tiles)
+- [x] Allow players to place tiles with capital letters and space (for blank tiles)
 
 ### Stretch Goals:
 - [ ] Track which tiles provide bonuses and update players' scores accordingly
