@@ -93,7 +93,13 @@ blockBonus bonus = vBox [ str (show bonus) ]
 
 -- | Widget for a tile with a letter
 blockLetter :: Tile.Tile -> Widget n
-blockLetter tile = vBox [ str (show tile) ]
+blockLetter tile = vBox [ str "┌―――┐"
+                        , str ("| " ++ show tile ++ " |")
+                        , str ("└――" ++ tileScore)
+                        ]
+  where
+    tileScore | getTileScore tile > 9 = show $ getTileScore tile
+              | otherwise             = " " ++ (show $ getTileScore tile)
 
 -------------------------------------------------------------------------------
 -- | Draw UI for Player
