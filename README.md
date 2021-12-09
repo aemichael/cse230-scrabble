@@ -45,7 +45,7 @@ our new set of minimum goals.
 - [x] Allow players to place tiles with capital letters and space (for blank tiles)
 
 ### Stretch Goals:
-- [ ] Track which tiles provide bonuses and update players' scores accordingly
+- [x] Track which tiles provide bonuses and update players' scores accordingly
 - [x] Support 2 players playing Scrabble locally on the same instance of the program
 - [x] A turn system in which each player alternates placing a word on the board
 - [x] Detect the end of the game and allow players to close or restart the game
