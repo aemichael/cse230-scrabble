@@ -79,8 +79,7 @@ calcPlayScore :: PlayedRack -> Board -> BonusBoard -> Score
 calcPlayScore pr b bb = sum wordScores
   where
     scoredWordsList = S.toList $ scoredWords (map snd pr) b
-    multipliers = map (getWordMultiplier bb pr) scoredWordsList
-    wordScores = zipWith (*) multipliers (map (calcWordScore b) scoredWordsList)
+    wordScores = map (calcWordScore b bb pr) scoredWordsList
 
 -- | Get the set of played words associated with this list of played positions.
 -- We model as a set rather than a list to avoid double-counting the word that
@@ -117,11 +116,26 @@ insertPos word pos = S.union (S.singleton pos) word
 combineWords :: PlayedWord -> PlayedWord -> PlayedWord
 combineWords = S.union
 
--- | Calculate the score of a played word
-calcWordScore :: Board -> PlayedWord -> Score
-calcWordScore b word = sum $ map getTileScore wordTiles
+-- | Calculate the score of a played word, applying any applicable bonuses
+calcWordScore :: Board -> BonusBoard -> PlayedRack -> PlayedWord -> Score
+calcWordScore b bb pr word = multiplier * rawScore
   where
-    wordTiles = map (getTileUnsafe b) (S.toList word)
+    rawScore = sum $ map (calcTileScore b bb pr) (S.toList word)
+    multiplier = getWordMultiplier bb pr word
+
+-- | Calculate the score for a single tile of a played word, applying any
+-- applicable bonuses if the tile was played on this turn.
+calcTileScore :: Board -> BonusBoard -> PlayedRack -> BoardPos -> Score
+calcTileScore b bb pr pos = multiplier * (getTileScore $ getTileUnsafe b pos)
+  where
+    multiplier = getTileBonus bb (map snd pr) pos
+
+    getTileBonus :: BonusBoard -> [BoardPos] -> BoardPos -> Int
+    getTileBonus bb ps pos | elem pos ps = case getBonus bb pos of
+                                              Just DblLetter -> 2
+                                              Just TrpLetter -> 3
+                                              _              -> 1
+                           | otherwise   = 1
 
 -- | Calculate the full-word score multiplier of a played word. Only apply
 -- multipliers activated by tiles played on this turn.
