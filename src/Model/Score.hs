@@ -20,6 +20,7 @@ import Prelude
 import Model.Tile
 import Model.PlayedRack
 import Model.Board
+import Model.Bonus
 import qualified Data.Set as S
 
 -------------------------------------------------------------------------------
@@ -38,8 +39,8 @@ initScore :: Score
 initScore = 0
 
 -- | Gets the score
-updateScore :: PlayedRack -> Board -> Score -> Score
-updateScore pr b sc = sc + calcPlayScore pr b
+updateScore :: PlayedRack -> Board -> BonusBoard -> Score -> Score
+updateScore pr b bb sc = sc + calcPlayScore pr b bb
 
 -- | Calculate the score for the given played rack and board. We model the
 -- score as being composed of \"words\", which are themselves individually
@@ -74,10 +75,12 @@ updateScore pr b sc = sc + calcPlayScore pr b
 -- two `E`'s placed this turn are each counted twice (once for each word in
 -- which they are included). Note also that we do *not* count the `A` or `D`
 -- in `AND`, which are not part of any word formed by this play. 
-calcPlayScore :: PlayedRack -> Board -> Score
-calcPlayScore pr b = sum $ map (calcWordScore b) scoredWordsList
+calcPlayScore :: PlayedRack -> Board -> BonusBoard -> Score
+calcPlayScore pr b bb = sum wordScores
   where
     scoredWordsList = S.toList $ scoredWords (map snd pr) b
+    multipliers = map (getWordMultiplier bb pr) scoredWordsList
+    wordScores = zipWith (*) multipliers (map (calcWordScore b) scoredWordsList)
 
 -- | Get the set of played words associated with this list of played positions.
 -- We model as a set rather than a list to avoid double-counting the word that
@@ -119,6 +122,20 @@ calcWordScore :: Board -> PlayedWord -> Score
 calcWordScore b word = sum $ map getTileScore wordTiles
   where
     wordTiles = map (getTileUnsafe b) (S.toList word)
+
+-- | Calculate the full-word score multiplier of a played word. Only apply
+-- multipliers activated by tiles played on this turn.
+getWordMultiplier :: BonusBoard -> PlayedRack -> PlayedWord -> Int
+getWordMultiplier bb pr word = product $ map (getWordBonus bb playedPos) (S.toList word)
+  where
+    playedPos = map snd pr
+
+    getWordBonus :: BonusBoard -> [BoardPos] -> BoardPos -> Int
+    getWordBonus bb ps pos | elem pos ps = case getBonus bb pos of
+                                              Just DblWord -> 2
+                                              Just TrpWord -> 3
+                                              _            -> 1
+                           | otherwise   = 1
 
 
 -------------------------------------------------------------------------------
