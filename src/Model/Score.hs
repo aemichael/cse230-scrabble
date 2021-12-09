@@ -74,12 +74,17 @@ updateScore pr b bb sc = sc + calcPlayScore pr b bb
 -- we calculate as (1 + 1 + 1 + 2) + (1 + 1) + (1 + 8) = 16. Observe that the
 -- two `E`'s placed this turn are each counted twice (once for each word in
 -- which they are included). Note also that we do *not* count the `A` or `D`
--- in `AND`, which are not part of any word formed by this play. 
+-- in `AND`, which are not part of any word formed by this play.
+--
+-- If the player uses 7 letters in a single play, then they receive a 50-point
+-- bonus in addition to their raw score.
 calcPlayScore :: PlayedRack -> Board -> BonusBoard -> Score
-calcPlayScore pr b bb = sum wordScores
+calcPlayScore pr b bb = sum wordScores + sevenLetterBonus
   where
     scoredWordsList = S.toList $ scoredWords (map snd pr) b
     wordScores = map (calcWordScore b bb pr) scoredWordsList
+    sevenLetterBonus | length pr == 7 = 50
+                     | otherwise      = 0
 
 -- | Get the set of played words associated with this list of played positions.
 -- We model as a set rather than a list to avoid double-counting the word that
