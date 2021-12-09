@@ -36,6 +36,7 @@ executable scrabble
   hs-source-dirs:      src
   other-modules:       SetupScrabble,
                        PlayScrabble,
+                       ScrabbleColors,
                        Model,
                        View, 
                        Controller,

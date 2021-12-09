@@ -30,12 +30,14 @@ data Bonus = DblLetter
            | TrpLetter
            | DblWord
            | TrpWord
+           | Star
 
 instance Show Bonus where
   show DblLetter = "2xL"
   show TrpLetter = "3xL"
   show DblWord   = "2xW"
   show TrpWord   = "3xW"
+  show Star      = "  ★  \n★ ★ ★\n  ★  "
 
 -- | A BonusBoard defines which board positions have associated bonuses, as
 -- well as the type of those bonuses.
@@ -55,7 +57,7 @@ initBonusBoard = M.fromList
   , (BoardPos 5 5, DblWord)    , (BoardPos 5 11, DblWord)  
   , (BoardPos 6 2, TrpLetter)  , (BoardPos 6 6, TrpLetter)  , (BoardPos 6 10, TrpLetter)  , (BoardPos 6 14, TrpLetter)
   , (BoardPos 7 3, DblLetter)  , (BoardPos 7 7, DblLetter)  , (BoardPos 7 9, DblLetter)   , (BoardPos 7 13, DblLetter)
-  , (BoardPos 8 1, TrpWord)    , (BoardPos 8 4, DblLetter)  , (BoardPos 8 8, DblWord)     , (BoardPos 8 12, DblLetter)  , (BoardPos 8 15, TrpWord)
+  , (BoardPos 8 1, TrpWord)    , (BoardPos 8 4, DblLetter)  , (BoardPos 8 8, Star)        , (BoardPos 8 12, DblLetter)  , (BoardPos 8 15, TrpWord)
   , (BoardPos 9 3, DblLetter)  , (BoardPos 9 7, DblLetter)  , (BoardPos 9 9, DblLetter)   , (BoardPos 9 13, DblLetter)
   , (BoardPos 10 2, TrpLetter) , (BoardPos 10 6, TrpLetter) , (BoardPos 10 10, TrpLetter) , (BoardPos 10 14, TrpLetter)
   , (BoardPos 11 5, DblWord)   , (BoardPos 11 11, DblWord)

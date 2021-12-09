@@ -20,6 +20,7 @@ import Model.Bonus as Bonus
 import Model.PlayedRack as PlayedRack
 import Model.Player as Player
 import Model.Tile as Tile
+import ScrabbleColors
 
 -------------------------------------------------------------------------------
 -- Draw UI entrypoint
@@ -71,17 +72,16 @@ withCursor = modifyDefAttr (`withStyle` reverseVideo)
 -- | Returns a cell with a widget corresponding to the tile at this position on
 -- the board
 mkCell' :: Model.Scrabble -> Int -> Int -> Widget n
-mkCell' s r c = center (mkTile tile bonus)
+mkCell' s r c = case tile of
+                  Just t  -> modifyDefAttr tileAttr $ center (blockLetter t)
+                  Nothing -> case bonus of 
+                    Nothing -> center blockBlank
+                    Just b  -> modifyDefAttr (bonusAttr b) $ center (blockBonus b)
   where 
-    tile      = Board.getTile  (scrabbleBoard s) (BoardPos r c)
-    bonus     = Bonus.getBonus (bonusBoard s)    (BoardPos r c)
-
-
--- | Converts a Tile to a widget
-mkTile :: Maybe Tile.Tile -> Maybe Bonus.Bonus -> Widget n
-mkTile (Just tile) _            = blockLetter tile
-mkTile _           (Just bonus) = blockBonus bonus
-mkTile _           _            = blockBlank
+    tile            = Board.getTile  (scrabbleBoard s) (BoardPos r c)
+    bonus           = Bonus.getBonus (bonusBoard s)    (BoardPos r c)
+    tileAttr  def   = def { attrBackColor = SetTo tilebg }
+    bonusAttr b def = def { attrBackColor = SetTo $ bonusbg b}
 
 -- | Widget for blank tiles
 blockBlank :: Widget n

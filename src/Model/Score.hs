@@ -152,6 +152,7 @@ getWordMultiplier bb pr word = product $ map (getWordBonus bb playedPos) (S.toLi
     getWordBonus :: BonusBoard -> [BoardPos] -> BoardPos -> Int
     getWordBonus bb ps pos | elem pos ps = case getBonus bb pos of
                                               Just DblWord -> 2
+                                              Just Star    -> 2
                                               Just TrpWord -> 3
                                               _            -> 1
                            | otherwise   = 1
