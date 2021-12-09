@@ -6,8 +6,9 @@
 
 module Model where 
 
-import qualified Model.Bag  as Bag
+import qualified Model.Bag    as Bag
 import qualified Model.Board  as Board
+import qualified Model.Bonus  as Bonus
 import qualified Model.Player as Player
 import           Prelude
 
@@ -26,6 +27,7 @@ data Scrabble = MkScrabble
   , scrabbleCurrPlayerKey :: Int                      -- ^ current player index
   , scrabblePlayersMap    :: Player.PlayerMap         -- ^ current players map
   , scrabbleBoard         :: Board.Board              -- ^ current board
+  , bonusBoard            :: Bonus.BonusBoard         -- ^ current bonus tiles
   , scrabblePos           :: Board.BoardPos           -- ^ current cursor
   , scrabbleBag           :: Bag.Bag                  -- ^ current bag
   }
@@ -37,6 +39,7 @@ initScrabble = MkScrabble
   , scrabbleCurrPlayerKey = Player.initCurrPlayerKey
   , scrabblePlayersMap    = Player.initPlayersMap
   , scrabbleBoard         = Board.initBoard
+  , bonusBoard            = Bonus.initBonusBoard
   , scrabblePos           = head Board.boardPositions
   , scrabbleBag           = if isTest then Bag.initTestBag else Bag.initBag
   }

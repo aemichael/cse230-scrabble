@@ -45,7 +45,8 @@ executable scrabble
                        Model.Tile,
                        Model.Rack,
                        Model.PlayedRack,
-                       Model.Score
+                       Model.Score,
+                       Model.Bonus
 		       
   default-language:    Haskell2010
   ghc-options:       -W -threaded

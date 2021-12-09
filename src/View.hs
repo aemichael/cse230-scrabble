@@ -12,11 +12,11 @@ import Brick
 import Brick.Widgets.Border (borderWithLabel, hBorder, vBorder)
 import Brick.Widgets.Border.Style (unicode)
 import Brick.Widgets.Center
-import Data.Char (toUpper)
 import Graphics.Vty hiding (dim)
 
 import Model
 import Model.Board as Board
+import Model.Bonus as Bonus
 import Model.PlayedRack as PlayedRack
 import Model.Player as Player
 import Model.Tile as Tile
@@ -71,23 +71,29 @@ withCursor = modifyDefAttr (`withStyle` reverseVideo)
 -- | Returns a cell with a widget corresponding to the tile at this position on
 -- the board
 mkCell' :: Model.Scrabble -> Int -> Int -> Widget n
-mkCell' s r c = center (mkTile xoMb)
+mkCell' s r c = center (mkTile tile bonus)
   where 
-    xoMb      = Board.getTile (scrabbleBoard s) (BoardPos r c)
+    tile      = Board.getTile  (scrabbleBoard s) (BoardPos r c)
+    bonus     = Bonus.getBonus (bonusBoard s)    (BoardPos r c)
 
 
 -- | Converts a Tile to a widget
-mkTile :: Maybe Tile.Tile -> Widget n
-mkTile (Just (Tile.Letter char)) = blockLetter char
-mkTile Nothing                   = blockBlank
+mkTile :: Maybe Tile.Tile -> Maybe Bonus.Bonus -> Widget n
+mkTile (Just tile) _            = blockLetter tile
+mkTile _           (Just bonus) = blockBonus bonus
+mkTile _           _            = blockBlank
 
 -- | Widget for blank tiles
 blockBlank :: Widget n
-blockBlank = vBox [ str " " ]
+blockBlank = vBox [ str "   " ]
+
+-- | Widget for unoccupied bonus tiles
+blockBonus :: Bonus.Bonus -> Widget n
+blockBonus bonus = vBox [ str (show bonus) ]
 
 -- | Widget for a tile with a letter
-blockLetter :: Char -> Widget n
-blockLetter char = vBox [ str [(toUpper char)] ]
+blockLetter :: Tile.Tile -> Widget n
+blockLetter tile = vBox [ str (show tile) ]
 
 -------------------------------------------------------------------------------
 -- | Draw UI for Player
