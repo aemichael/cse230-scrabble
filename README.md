@@ -1,5 +1,7 @@
 # Scrabble
 
+![image](https://user-images.githubusercontent.com/43918195/145623458-39b14804-87e6-4276-aa01-6381310ba2d0.png)
+
 Group Members: Alexandra Michael (aemichae@ucsd.edu), Imran Matin (imatin@ucsd.edu)
 
 Our proposal is to use the `brick` library to implement a command-line version of Scrabble.
