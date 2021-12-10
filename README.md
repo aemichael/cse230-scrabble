@@ -1,6 +1,6 @@
 # Scrabble (CSE 230 Version)
 
-![image](https://user-images.githubusercontent.com/43918195/145627674-0c61f4dc-5720-47b8-bc4e-1814d012d318.png)
+![image](https://user-images.githubusercontent.com/43918195/145629982-95d6a156-28fe-4d77-9a46-76188dc32835.png)
 
 Group Members: Alexandra Michael (aemichae@ucsd.edu), Imran Matin (imatin@ucsd.edu)
 
