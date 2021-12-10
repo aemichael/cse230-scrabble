@@ -1,4 +1,4 @@
-# Scrabble
+# Scrabble (CSE 230 Version)
 
 ![image](https://user-images.githubusercontent.com/43918195/145623458-39b14804-87e6-4276-aa01-6381310ba2d0.png)
 
