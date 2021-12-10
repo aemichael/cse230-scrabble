@@ -17,6 +17,7 @@ import qualified Graphics.Vty as V
 import           Graphics.Vty.Attributes
 import           Model
 import           Model.Player
+import           ScrabbleColors
 import           View
 
 -- | Runs the main Scrabble game.
@@ -47,5 +48,12 @@ app playerCount = App
     -- The function to run when the application is started
   , appStartEvent   = Controller.startup playerCount
     -- Attribute map
-  , appAttrMap      = const (attrMap defAttr [])
+  , appAttrMap      = const (attrMap appAttr [])
   }
+  where
+    appAttr = Attr
+                { attrStyle     = Default
+                , attrForeColor = SetTo black
+                , attrBackColor = SetTo defbg
+                , attrURL       = Default
+                }

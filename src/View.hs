@@ -12,22 +12,22 @@ import Brick
 import Brick.Widgets.Border (borderWithLabel, hBorder, vBorder)
 import Brick.Widgets.Border.Style (unicode)
 import Brick.Widgets.Center
-import Data.Char (toUpper)
 import Graphics.Vty hiding (dim)
 
 import Model
 import Model.Board as Board
+import Model.Bonus as Bonus
 import Model.PlayedRack as PlayedRack
 import Model.Player as Player
 import Model.Tile as Tile
+import ScrabbleColors
 
 -------------------------------------------------------------------------------
 -- Draw UI entrypoint
 -------------------------------------------------------------------------------
 drawUI :: Model.Scrabble -> [Widget String]
 drawUI scrabble = [ (drawBoard scrabble) <+> 
-                    -- ( (drawBag scrabble) <=>
-                    ( 
+                    ( (drawBag scrabble) <=>
                       (drawCurrentPlayer scrabble) <=>
                       (drawPlayers scrabble)
                     )
@@ -72,23 +72,34 @@ withCursor = modifyDefAttr (`withStyle` reverseVideo)
 -- | Returns a cell with a widget corresponding to the tile at this position on
 -- the board
 mkCell' :: Model.Scrabble -> Int -> Int -> Widget n
-mkCell' s r c = center (mkTile xoMb)
+mkCell' s r c = case tile of
+                  Just t  -> modifyDefAttr tileAttr $ center (blockLetter t)
+                  Nothing -> case bonus of 
+                    Nothing -> center blockBlank
+                    Just b  -> modifyDefAttr (bonusAttr b) $ center (blockBonus b)
   where 
-    xoMb      = Board.getTile (scrabbleBoard s) (BoardPos r c)
-
-
--- | Converts a Tile to a widget
-mkTile :: Maybe Tile.Tile -> Widget n
-mkTile (Just (Tile.Letter char)) = blockLetter char
-mkTile Nothing                   = blockBlank
+    tile            = Board.getTile  (scrabbleBoard s) (BoardPos r c)
+    bonus           = Bonus.getBonus (bonusBoard s)    (BoardPos r c)
+    tileAttr  def   = def { attrBackColor = SetTo tilebg }
+    bonusAttr b def = def { attrBackColor = SetTo $ bonusbg b}
 
 -- | Widget for blank tiles
 blockBlank :: Widget n
-blockBlank = vBox [ str " " ]
+blockBlank = vBox [ str "   " ]
+
+-- | Widget for unoccupied bonus tiles
+blockBonus :: Bonus.Bonus -> Widget n
+blockBonus bonus = vBox [ str (show bonus) ]
 
 -- | Widget for a tile with a letter
-blockLetter :: Char -> Widget n
-blockLetter char = vBox [ str [(toUpper char)] ]
+blockLetter :: Tile.Tile -> Widget n
+blockLetter tile = vBox [ str "┌―――┐"
+                        , str ("| " ++ show tile ++ " |")
+                        , str ("└――" ++ tileScore)
+                        ]
+  where
+    tileScore | getTileScore tile > 9 = show $ getTileScore tile
+              | otherwise             = " " ++ (show $ getTileScore tile)
 
 -------------------------------------------------------------------------------
 -- | Draw UI for Player
@@ -148,12 +159,12 @@ drawCurrentPlayer scrabble =
 -------------------------------------------------------------------------------
 -- | Draw UI for Bag
 -------------------------------------------------------------------------------
--- drawBag :: Model.Scrabble -> Widget String
--- drawBag scrabble = 
---   withBorderStyle unicode
---   $ borderWithLabel (str "Bag")
---   $ padTopBottom 1
---   $ vBox
---   $ map (uncurry drawInfo)[ ("Num Tiles Left", numTilesLeft) ]
---   where
---     numTilesLeft = show $ length $ scrabbleBag scrabble
+drawBag :: Model.Scrabble -> Widget String
+drawBag scrabble = 
+  withBorderStyle unicode
+  $ borderWithLabel (str "Bag")
+  $ padTopBottom 1
+  $ vBox
+  $ map (uncurry drawInfo)[ ("Num Tiles Left", numTilesLeft) ]
+  where
+    numTilesLeft = show $ length $ scrabbleBag scrabble

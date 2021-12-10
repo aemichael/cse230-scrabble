@@ -203,7 +203,7 @@ endTurn s = do
   -- PlayedRack is a [(Tile, BoardPos)] so the board pos info can be used
   -- to compute which tiles are on bonus board positions and also search fromEnum
   -- a board position the four directions for the tiles it is connected to.
-  let newScore      = updateScore playedRack board currScore
+  let newScore      = updateScore playedRack board (bonusBoard s) currScore
   -- Refill Rack
   (bag', rack')    <- fillRack rack bag
   -- Clear playedRack

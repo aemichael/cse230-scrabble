@@ -36,6 +36,7 @@ executable scrabble
   hs-source-dirs:      src
   other-modules:       SetupScrabble,
                        PlayScrabble,
+                       ScrabbleColors,
                        Model,
                        View, 
                        Controller,
@@ -45,7 +46,8 @@ executable scrabble
                        Model.Tile,
                        Model.Rack,
                        Model.PlayedRack,
-                       Model.Score
+                       Model.Score,
+                       Model.Bonus
 		       
   default-language:    Haskell2010
   ghc-options:       -W -threaded
